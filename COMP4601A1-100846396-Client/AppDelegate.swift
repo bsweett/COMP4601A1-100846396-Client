@@ -12,10 +12,23 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var navController : UINavigationController?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        //Navigation Controller
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        
+        var mainViewController = MainViewController(nibName: "MainViewController", bundle: nil)
+        
+        navController = UINavigationController(rootViewController: mainViewController)
+        navController?.setNavigationBarHidden(true, animated: false)
+        navController?.interactivePopGestureRecognizer.enabled = false;
+        
+        window?.rootViewController = navController
+        window?.makeKeyAndVisible()
+        
         return true
     }
 
