@@ -80,7 +80,7 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     
     @IBAction func showLinkAlert(sender: UIButton) {
         
-        let alert = UIAlertController(title:  "Enter a URL", message: "URL's are relative to: " + appCurrentServer + "/sda/", preferredStyle: UIAlertControllerStyle.Alert)
+        let alert = UIAlertController(title:  "Enter a URL", message: "URL's are relative to: " + appCurrentServer, preferredStyle: UIAlertControllerStyle.Alert)
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
             
         }
@@ -188,19 +188,25 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         return false
     }
     
+    func popView() {
+        self.navigationController?.popToRootViewControllerAnimated(true)
+    }
+    
     // MARK: - NSNotifications
     
     func gotResponseFromServer(notification: NSNotification) {
-        let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
-        let response: NSData = userInfo["data"]!
+        let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
+        let response: String = userInfo["message"]!
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
-            if(self.webVC == nil) {
-                self.webVC = WebViewController(nibName: "WebViewController", bundle: nil)
+            let alert = UIAlertController(title:  "SDA Response", message: response, preferredStyle: UIAlertControllerStyle.Alert)
+            let cancelAction = UIAlertAction(title: "Ok", style: .Cancel) { (action) in
+                
             }
-        
-            self.webVC.setViewData(response)
-            self.navigationController?.pushViewController(self.webVC, animated: true)
+            alert.addAction(cancelAction)
+            self.presentViewController(alert, animated: true, completion: { () -> Void in
+               self.popView()
+            })
         }
     }
     

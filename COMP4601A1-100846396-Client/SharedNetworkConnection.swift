@@ -53,13 +53,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
-        request.HTTPBody = data //NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &err)
+        request.HTTPBody = data
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue(length, forHTTPHeaderField: "Content-Length")
-        request.addValue("text/html", forHTTPHeaderField: "Accept")
-
-        let str = NSString(data: data, encoding: NSUTF8StringEncoding)
-        println("sent: ", str)
+        //request.addValue("text/html", forHTTPHeaderField: "Accept")
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
@@ -72,36 +69,23 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 dictionary["error"] = err!.localizedDescription
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
                 
-            } else {
-                var dictionary = Dictionary<String, NSData>()
-                dictionary["data"] = data
+            } else if let httpResponse: NSHTTPURLResponse! = response as? NSHTTPURLResponse {
+                
+                var result: String! = ""
+                
+                if(httpResponse.statusCode == 200) {
+                    result = "Document Created"
+                } else if (httpResponse.statusCode == 204) {
+                    result = "Document Creation Failed: No Content"
+                } else {
+                    result = "Document Creation Failed: Internal Server Error"
+                }
+                
+                var dictionary = Dictionary<String, String>()
+                dictionary["message"] = result
                 NSNotificationCenter.defaultCenter().postNotificationName("CREATE", object: nil, userInfo: dictionary)
             }
-
             
-            /*
-            var json = NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves, error: &err) as? NSDictionary
-            
-            // Did the JSONObjectWithData constructor return an error? If so, log the error to the console
-            if(err != nil) {
-                println(err!.localizedDescription)
-                let jsonStr = NSString(data: data, encoding: NSUTF8StringEncoding)
-                println("Error could not parse JSON: '\(jsonStr)'")
-            }
-            else {
-                // The JSONObjectWithData constructor didn't return an error. But, we should still
-                // check and make sure that json has a value using optional binding.
-                if let parseJSON = json {
-                    // Okay, the parsedJSON is here, let's get the value for 'success' out of it
-                    var success = parseJSON["success"] as? Int
-                    println("Succes: \(success)")
-                }
-                else {
-                    // Woa, okay the json object was nil, something went worng. Maybe the server isn't running?
-                    let jsonStr = NSString(data: data, encoding: NSUTF8StringEncoding)
-                    println("Error could not parse JSON: \(jsonStr)")
-                }
-            }*/
         })
         
         task.resume()
@@ -131,11 +115,13 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         "</document>"
         
         let data : NSData = (xmlString).dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
         request.HTTPBody = data
-        request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
-        request.addValue("text/html", forHTTPHeaderField: "Accept")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        //request.addValue("text/html", forHTTPHeaderField: "Accept")
         
         println("sent")
         
@@ -149,9 +135,18 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 var dictionary = Dictionary<String, String>()
                 dictionary["error"] = err!.localizedDescription
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
-            } else {
-                var dictionary = Dictionary<String, NSData>()
-                dictionary["data"] = data
+            } else if let httpResponse: NSHTTPURLResponse! = response as? NSHTTPURLResponse {
+                
+                var result: String! = ""
+                
+                if(httpResponse.statusCode == 200) {
+                    result = "Document Update"
+                } else {
+                    result = "Document Update Failed: Internal Server Error"
+                }
+                
+                var dictionary = Dictionary<String, String>()
+                dictionary["message"] = result
                 NSNotificationCenter.defaultCenter().postNotificationName("UPDATE", object: nil, userInfo: dictionary)
             }
         })
@@ -165,11 +160,13 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPMethod = "DELETE"
         
         let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
         request.HTTPBody = data
-        request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
-        request.addValue("text/html", forHTTPHeaderField: "Accept")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        //request.addValue("text/html", forHTTPHeaderField: "Accept")
         
         println("sent")
         
@@ -183,9 +180,20 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 var dictionary = Dictionary<String, String>()
                 dictionary["error"] = err!.localizedDescription
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
-            } else {
-                var dictionary = Dictionary<String, NSData>()
-                dictionary["data"] = data
+            } else if let httpResponse: NSHTTPURLResponse! = response as? NSHTTPURLResponse {
+                
+                var result: String! = ""
+                
+                if(httpResponse.statusCode == 200) {
+                    result = "Document Removed"
+                } else if (httpResponse.statusCode == 204) {
+                    result = "Document Removal Failed: No Content"
+                } else {
+                    result = "Document Removal Failed: Internal Server Error"
+                }
+                
+                var dictionary = Dictionary<String, String>()
+                dictionary["message"] = result
                 NSNotificationCenter.defaultCenter().postNotificationName("DELETE", object: nil, userInfo: dictionary)
             }
 
@@ -200,10 +208,12 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPMethod = "GET"
         
         let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
         request.HTTPBody = data
-        request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
         request.addValue("text/html", forHTTPHeaderField: "Accept")
         
         println("sent")
@@ -235,11 +245,13 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPMethod = "GET"
         
         let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
         request.HTTPBody = data
-        request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/xml", forHTTPHeaderField: "Accept")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Accept")
         
         println("sent")
         
@@ -272,11 +284,13 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPMethod = "GET"
         
         let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
         request.HTTPBody = data
-        request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
-        request.addValue("text/html", forHTTPHeaderField: "Accept")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        //request.addValue("text/html", forHTTPHeaderField: "Accept")
         
         println("sent")
         
@@ -290,9 +304,20 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 var dictionary = Dictionary<String, String>()
                 dictionary["error"] = err!.localizedDescription
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
-            } else {
-                var dictionary = Dictionary<String, NSData>()
-                dictionary["data"] = data
+            } else if let httpResponse: NSHTTPURLResponse! = response as? NSHTTPURLResponse {
+                
+                var result: String! = ""
+                
+                if(httpResponse.statusCode == 200) {
+                    result = "Document Removed"
+                } else if (httpResponse.statusCode == 204) {
+                    result = "Document Removal Failed: No Content"
+                } else {
+                    result = "Document Removal Failed: Internal Server Error"
+                }
+                
+                var dictionary = Dictionary<String, String>()
+                dictionary["message"] = result
                 NSNotificationCenter.defaultCenter().postNotificationName("DELETE-MULTI", object: nil, userInfo: dictionary)
             }
 
@@ -307,10 +332,12 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPMethod = "GET"
         
         let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
         request.HTTPBody = data
-        request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
         request.addValue("text/html", forHTTPHeaderField: "Accept")
         
         println("sent")
@@ -343,10 +370,12 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPMethod = "GET"
         
         let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
         request.HTTPBody = data
-        request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
         request.addValue("text/html", forHTTPHeaderField: "Accept")
         
         println("sent")
