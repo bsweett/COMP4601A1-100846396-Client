@@ -42,21 +42,24 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
             xmlTags.append("<link>" + l + "</link>")
         }
         
-        let xmlString: String = "<document>" +
+        let xmlString: String = "<?xml version=\"1.0\" ?>\n" + "<Document>" +
                                 "<name>" + name + "</name>" +
                                 "<text>" + text + "</text>" +
                                 "<tags>" + xmlTags.toString() + "</tags>" +
                                 "<links>" +  xmlLinks.toString() + "</links>" +
-                                "</document>"
+                                "</Document>"
         
         let data : NSData = (xmlString).dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
         request.HTTPBody = data //NSJSONSerialization.dataWithJSONObject(params, options: nil, error: &err)
-        request.addValue("application/xml", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
         request.addValue("text/html", forHTTPHeaderField: "Accept")
-        
-        println("sent")
+
+        let str = NSString(data: data, encoding: NSUTF8StringEncoding)
+        println("sent: ", str)
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
