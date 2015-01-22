@@ -1,15 +1,19 @@
 //
-//  ViewAllViewController.swift
+//  WebViewController.swift
 //  COMP4601A1-100846396-Client
 //
-//  Created by Ben Sweett on 2015-01-19.
+//  Created by Ben Sweett on 2015-01-21.
 //  Copyright (c) 2015 Ben Sweett. All rights reserved.
 //
 
 import UIKit
 
-class ViewAllViewController: UIViewController {
+class WebViewController: UIViewController {
 
+    var viewData: NSData!
+    
+    @IBOutlet weak var webView: UIWebView!
+    
     // MARK: - Lifecyle
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
@@ -22,7 +26,7 @@ class ViewAllViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        SharedHelper.setNavBarForViewController(self, title: "View All Documents", withSubmitButton: true)
+        SharedHelper.setNavBarForViewController(self, title: "Web View", withSubmitButton: false)
         // Do any additional setup after loading the view.
     }
     
@@ -33,6 +37,10 @@ class ViewAllViewController: UIViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        if(self.viewData != nil) {
+            webView.loadData(self.viewData, MIMEType: "text/html", textEncodingName: "UTF-8", baseURL: nil)
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -48,10 +56,7 @@ class ViewAllViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    // MARK: - Actions
-    
-    @IBAction func submitAction(sender: UIBarButtonItem) {
-        SharedNetworkConnection.sharedInstance.viewAllDocumentsOnServer()
+    func setViewData(data: NSData) {
+        self.viewData = data
     }
-
 }

@@ -6,6 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DeleteViewController" customModule="COMP4601A1_100846396_Client" customModuleProvider="target">
             <connections>
+                <outlet property="searchField" destination="yjv-Wn-EeC" id="MNl-yJ-dvh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -13,7 +14,33 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter an id or tags (separate by ':')" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dAs-H6-9Ca">
+                    <rect key="frame" x="175" y="80" width="250" height="41"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="250" id="1vd-em-02I"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ID or TAG1:TAG2.." minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yjv-Wn-EeC">
+                    <rect key="frame" x="175" y="141" width="250" height="50"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="JnB-me-mwG"/>
+                        <constraint firstAttribute="width" constant="250" id="y6H-tz-Zbw"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+            </subviews>
             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="centerX" secondItem="dAs-H6-9Ca" secondAttribute="centerX" id="Hq9-dQ-3aA"/>
+                <constraint firstItem="yjv-Wn-EeC" firstAttribute="top" secondItem="dAs-H6-9Ca" secondAttribute="bottom" constant="20" id="aYL-Rn-zkM"/>
+                <constraint firstItem="dAs-H6-9Ca" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="80" id="f6c-c1-fg6"/>
+                <constraint firstAttribute="centerX" secondItem="yjv-Wn-EeC" secondAttribute="centerX" id="iXd-sG-brc"/>
+            </constraints>
         </view>
     </objects>
 </document>

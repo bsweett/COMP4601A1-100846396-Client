@@ -6,6 +6,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SearchViewController" customModule="COMP4601A1_100846396_Client" customModuleProvider="target">
             <connections>
+                <outlet property="searchField" destination="f4Q-KD-zXG" id="iuD-IU-wwd"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -13,7 +14,33 @@
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ID or TAG1:TAG2.." minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f4Q-KD-zXG">
+                    <rect key="frame" x="175" y="151" width="250" height="50"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="0hx-mn-kee"/>
+                        <constraint firstAttribute="width" constant="250" id="pVe-fP-61v"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter an id or tags (separate by ':')" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eGO-4R-SQv">
+                    <rect key="frame" x="175" y="80" width="250" height="41"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="250" id="Xhe-Sx-Mkn"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="eGO-4R-SQv" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="80" id="TJd-Oo-6qE"/>
+                <constraint firstAttribute="centerX" secondItem="eGO-4R-SQv" secondAttribute="centerX" id="lTs-T1-fit"/>
+                <constraint firstAttribute="centerX" secondItem="f4Q-KD-zXG" secondAttribute="centerX" id="tKD-BQ-FBB"/>
+                <constraint firstItem="f4Q-KD-zXG" firstAttribute="top" secondItem="eGO-4R-SQv" secondAttribute="bottom" constant="30" id="y9w-uD-AEj"/>
+            </constraints>
         </view>
     </objects>
 </document>

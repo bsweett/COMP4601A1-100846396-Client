@@ -20,7 +20,7 @@ class MainViewController: UIViewController {
     var SearchVC: SearchViewController!
     var updateVC: UpdateViewController!
     var deleteVC: DeleteViewController!
-    var viewAllVC: ViewAllViewController!
+    var webVC: WebViewController!
     
     // MARK: - Lifecyle
     
@@ -39,6 +39,8 @@ class MainViewController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"VIEWALL", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotNetworkError:", name:"NETWORK-ERROR", object: nil)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
@@ -47,7 +49,8 @@ class MainViewController: UIViewController {
     }
     
     override func viewWillDisappear(animated: Bool) {
-        super.viewWillAppear(animated)
+        super.viewWillDisappear(animated)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -94,11 +97,46 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func presentViewAllView(sender: UIButton) {
-        if(self.viewAllVC == nil) {
-            self.viewAllVC = ViewAllViewController(nibName: "ViewAllViewController", bundle: nil)
+        
+        viewAllButton.enabled = false
+        SharedNetworkConnection.sharedInstance.viewAllDocumentsOnServer()
+        
+    }
+    
+    // MARK: - NSNotifications
+    
+    func gotResponseFromServer(notification: NSNotification) {
+        let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
+        let response: NSData = userInfo["data"]!
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.viewAllButton.enabled = true
+            if(self.webVC == nil) {
+                self.webVC = WebViewController(nibName: "WebViewController", bundle: nil)
+            }
+            
+            self.webVC.setViewData(response)
+            self.navigationController?.pushViewController(self.webVC, animated: true)
+        }
+    }
+    
+    func gotNetworkError(notification: NSNotification) {
+        let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
+        let error: String = userInfo["error"]!
+        
+        let alert = UIAlertController(title:  "Network Error", message: error, preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction = UIAlertAction(title: "Ok", style: .Cancel) { (action) in
+            
+        }
+        alert.addAction(cancelAction)
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.viewAllButton.enabled = true
+            self.presentViewController(alert, animated: true) {
+                
+            }
         }
         
-        self.navigationController?.pushViewController(self.viewAllVC, animated: true)
     }
 
 }

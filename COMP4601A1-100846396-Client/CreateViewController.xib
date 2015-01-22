@@ -4,8 +4,13 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CreateController" customModule="COMP4601A1_100846396_Client" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CreateViewController" customModule="COMP4601A1_100846396_Client" customModuleProvider="target">
             <connections>
+                <outlet property="addUrlButton" destination="hnc-jC-nSh" id="Gil-ip-wWS"/>
+                <outlet property="documentField" destination="lVn-fP-mRo" id="NRw-Ua-oB4"/>
+                <outlet property="nameField" destination="Cts-7S-ANg" id="5UX-jA-it9"/>
+                <outlet property="tagField" destination="VhN-MD-eMm" id="KTf-My-PDy"/>
+                <outlet property="urlField" destination="LtV-f6-a71" id="Hnp-hT-wlX"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -57,6 +62,9 @@
                     <state key="normal">
                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
+                    <connections>
+                        <action selector="showLinkAlert:" destination="-1" eventType="touchUpInside" id="ilL-eZ-YSp"/>
+                    </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap the + button to add links:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8HA-bB-KD7">
                     <rect key="frame" x="150" y="417" width="225" height="21"/>

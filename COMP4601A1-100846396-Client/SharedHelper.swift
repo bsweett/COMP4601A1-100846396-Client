@@ -36,4 +36,34 @@ class SharedHelper {
         }
     }
     
+    class func validatePathEntry(testStr: String) -> Bool{
+        let regex = NSRegularExpression(pattern: "^(/)?([^/\0]+(/)?)+$", options: .CaseInsensitive, error: nil)
+        return regex?.firstMatchInString(testStr, options: nil, range: NSMakeRange(0, countElements(testStr))) != nil
+    }
+    
+    class func validName(testStr: String) -> Bool {
+        let regex = NSRegularExpression(pattern: "^([a-zA-Z]){3,35}$", options: .CaseInsensitive, error: nil)
+        return regex?.firstMatchInString(testStr, options: nil, range: NSMakeRange(0, countElements(testStr))) != nil
+    }
+    
+    class func validTags(testStr: String) -> Bool {
+        let regex = NSRegularExpression(pattern: "^([a-zA-Z:]){1,255}$", options: .CaseInsensitive, error: nil)
+        return regex?.firstMatchInString(testStr, options: nil, range: NSMakeRange(0, countElements(testStr))) != nil
+    }
+    
+    class func buildTagsArrayFromString(text: String) -> [String] {
+        var arr = split(text) {$0 == ":"}
+        return arr
+    }
+    
+    class func buildLinksArrayFromString(text: String) -> [String] {
+        var arr = text.componentsSeparatedByString("\n")
+        return arr
+    }
+    
+    class func validId(testStr: String) -> Bool {
+        let regex = NSRegularExpression(pattern: "^[0-9]*$", options: .CaseInsensitive, error: nil)
+        return regex?.firstMatchInString(testStr, options: nil, range: NSMakeRange(0, countElements(testStr))) != nil
+    }
+    
 }

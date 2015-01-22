@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F05F79A1A7030E3005847C0 /* StringBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F05F7991A7030E3005847C0 /* StringBuilder.swift */; };
+		5F05F79F1A7038DA005847C0 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F05F79D1A7038DA005847C0 /* WebViewController.swift */; };
+		5F05F7A01A7038DA005847C0 /* WebViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5F05F79E1A7038DA005847C0 /* WebViewController.xib */; };
+		5F910DDC1A6E094A00DB0450 /* JLToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F910DD91A6E094A00DB0450 /* JLToast.swift */; };
+		5F910DDD1A6E094A00DB0450 /* JLToastCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F910DDA1A6E094A00DB0450 /* JLToastCenter.swift */; };
+		5F910DDE1A6E094A00DB0450 /* JLToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F910DDB1A6E094A00DB0450 /* JLToastView.swift */; };
 		5FF0FFA21A6DA87C00676819 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF0FFA11A6DA87C00676819 /* AppDelegate.swift */; };
 		5FF0FFA91A6DA87C00676819 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FF0FFA81A6DA87C00676819 /* Images.xcassets */; };
 		5FF0FFAC1A6DA87C00676819 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FF0FFAA1A6DA87C00676819 /* LaunchScreen.xib */; };
@@ -39,6 +45,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5F05F7991A7030E3005847C0 /* StringBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringBuilder.swift; sourceTree = "<group>"; };
+		5F05F79D1A7038DA005847C0 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		5F05F79E1A7038DA005847C0 /* WebViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = WebViewController.xib; sourceTree = "<group>"; };
+		5F910DD91A6E094A00DB0450 /* JLToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToast.swift; sourceTree = "<group>"; };
+		5F910DDA1A6E094A00DB0450 /* JLToastCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToastCenter.swift; sourceTree = "<group>"; };
+		5F910DDB1A6E094A00DB0450 /* JLToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToastView.swift; sourceTree = "<group>"; };
 		5FF0FF9C1A6DA87B00676819 /* COMP4601A1-100846396-Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "COMP4601A1-100846396-Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FF0FFA01A6DA87C00676819 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5FF0FFA11A6DA87C00676819 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +94,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F910DD81A6E091800DB0450 /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				5F910DD91A6E094A00DB0450 /* JLToast.swift */,
+				5F910DDA1A6E094A00DB0450 /* JLToastCenter.swift */,
+				5F910DDB1A6E094A00DB0450 /* JLToastView.swift */,
+				5F05F7991A7030E3005847C0 /* StringBuilder.swift */,
+			);
+			name = ThirdParty;
+			sourceTree = "<group>";
+		};
 		5FF0FF931A6DA87B00676819 = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +126,7 @@
 		5FF0FF9E1A6DA87B00676819 /* COMP4601A1-100846396-Client */ = {
 			isa = PBXGroup;
 			children = (
+				5F910DD81A6E091800DB0450 /* ThirdParty */,
 				5FF0FFCA1A6DAFFF00676819 /* Shared */,
 				5FF0FFC51A6DA8CB00676819 /* ViewControllers */,
 				5FF0FFA11A6DA87C00676819 /* AppDelegate.swift */,
@@ -153,6 +177,8 @@
 				5FF0FFD61A6DB39400676819 /* DeleteViewController.xib */,
 				5FF0FFD91A6DB3A400676819 /* ViewAllViewController.swift */,
 				5FF0FFDA1A6DB3A400676819 /* ViewAllViewController.xib */,
+				5F05F79D1A7038DA005847C0 /* WebViewController.swift */,
+				5F05F79E1A7038DA005847C0 /* WebViewController.xib */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -250,6 +276,7 @@
 				5FF0FFAC1A6DA87C00676819 /* LaunchScreen.xib in Resources */,
 				5FF0FFC91A6DAEB500676819 /* CreateViewController.xib in Resources */,
 				5FF0FFC41A6DA8C600676819 /* MainViewController.xib in Resources */,
+				5F05F7A01A7038DA005847C0 /* WebViewController.xib in Resources */,
 				5FF0FFD81A6DB39400676819 /* DeleteViewController.xib in Resources */,
 				5FF0FFD01A6DB16400676819 /* SearchViewController.xib in Resources */,
 				5FF0FFDC1A6DB3A400676819 /* ViewAllViewController.xib in Resources */,
@@ -276,11 +303,16 @@
 				5FF0FFDE1A6DBC2A00676819 /* SharedConstants.swift in Sources */,
 				5FF0FFDB1A6DB3A400676819 /* ViewAllViewController.swift in Sources */,
 				5FF0FFA21A6DA87C00676819 /* AppDelegate.swift in Sources */,
+				5F910DDE1A6E094A00DB0450 /* JLToastView.swift in Sources */,
 				5FF0FFD71A6DB39400676819 /* DeleteViewController.swift in Sources */,
+				5F05F79A1A7030E3005847C0 /* StringBuilder.swift in Sources */,
 				5FF0FFE01A6DBFB400676819 /* SharedNetworkConnection.swift in Sources */,
 				5FF0FFC81A6DAEB500676819 /* CreateViewController.swift in Sources */,
 				5FF0FFCC1A6DB03600676819 /* SharedHelper.swift in Sources */,
+				5F910DDD1A6E094A00DB0450 /* JLToastCenter.swift in Sources */,
 				5FF0FFC31A6DA8C600676819 /* MainViewController.swift in Sources */,
+				5F910DDC1A6E094A00DB0450 /* JLToast.swift in Sources */,
+				5F05F79F1A7038DA005847C0 /* WebViewController.swift in Sources */,
 				5FF0FFD31A6DB18E00676819 /* UpdateViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -467,6 +499,7 @@
 				5FF0FFBD1A6DA87C00676819 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		5FF0FFBE1A6DA87C00676819 /* Build configuration list for PBXNativeTarget "COMP4601A1-100846396-ClientTests" */ = {
 			isa = XCConfigurationList;
@@ -475,6 +508,7 @@
 				5FF0FFC01A6DA87C00676819 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
