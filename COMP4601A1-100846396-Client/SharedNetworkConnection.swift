@@ -39,7 +39,7 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         }
         
         for l in linksArray {
-            xmlTags.append("<link>" + l + "</link>")
+            xmlLinks.append("<link>" + l + "</link>")
         }
         
         let xmlString: String = "<?xml version=\"1.0\" ?>\n" + "<Document>" +
