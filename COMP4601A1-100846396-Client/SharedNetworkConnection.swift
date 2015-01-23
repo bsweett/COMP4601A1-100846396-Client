@@ -35,28 +35,36 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         let linksArray: [String] = SharedHelper.buildLinksArrayFromString(links)
         
         for s in tagsArray {
-            xmlTags.append("<tag>" + s + "</tag>")
+            xmlTags.append("<tags>" + s + "</tags>")
         }
         
         for l in linksArray {
-            xmlLinks.append("<link>" + l + "</link>")
+            xmlLinks.append("<links>" + l + "</links>")
         }
+        
+        println(xmlTags.toString())
+        println(xmlLinks.toString())
         
         let xmlString: String = "<?xml version=\"1.0\" ?>\n" + "<Document>" +
                                 "<name>" + name + "</name>" +
                                 "<text>" + text + "</text>" +
-                                "<tags>" + xmlTags.toString() + "</tags>" +
-                                "<links>" +  xmlLinks.toString() + "</links>" +
+                                xmlTags.toString() +
+                                xmlLinks.toString() +
                                 "</Document>"
         
         let data : NSData = (xmlString).dataUsingEncoding(NSUTF8StringEncoding)!;
         let length: NSString = NSString(format: "%d", data.length)
+        
+        print("Data: ")
+        println(data)
         
         var err: NSError?
         request.HTTPBody = data
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue(length, forHTTPHeaderField: "Content-Length")
         //request.addValue("text/html", forHTTPHeaderField: "Accept")
+     
+        println(NSString(data: request.HTTPBody!, encoding: NSUTF8StringEncoding))
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
@@ -102,17 +110,17 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         let linksArray: [String] = SharedHelper.buildLinksArrayFromString(links)
         
         for s in tagsArray {
-            xmlTags.append("<tag>" + s + "</tag>")
+            xmlTags.append("<tags>" + s + "</tags>")
         }
         
         for l in linksArray {
-            xmlTags.append("<link>" + l + "</link>")
+            xmlTags.append("<links>" + l + "</links>")
         }
         
         let xmlString: String = "<document>" +
-            "<tags>" + xmlTags.toString() + "</tags>" +
-            "<links>" +  xmlLinks.toString() + "</links>" +
-        "</document>"
+                                xmlTags.toString()  +
+                                xmlLinks.toString() +
+                                "</document>"
         
         let data : NSData = (xmlString).dataUsingEncoding(NSUTF8StringEncoding)!;
         let length: NSString = NSString(format: "%d", data.length)
