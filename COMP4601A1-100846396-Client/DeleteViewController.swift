@@ -67,7 +67,7 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Actions
     
     @IBAction func submitAction(sender: UIBarButtonItem) {
-        if searchText.rangeOfString(":") != nil {
+         if (searchText.rangeOfString(":") != nil || !SharedHelper.validId(searchText)){
             SharedNetworkConnection.sharedInstance.deleteMultipleDocumentsOnServer(searchText)
         } else {
             SharedNetworkConnection.sharedInstance.deleteDocumentOnServer(searchText)

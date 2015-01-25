@@ -85,8 +85,11 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
         cell.selectedBackgroundView = selectedBackgroundView
 
         cell.textLabel?.textColor = UIColor.blackColor()
-        cell.textLabel?.text = (String(indexPath.row + 1)) + " : " + (self.docList[(indexPath.row + 1)]!.name!)
         
+        if let doc = self.docList[(indexPath.row + 1)] {
+            cell.textLabel?.text = (String(indexPath.row + 1) + " : " + doc.name)
+        }
+
         return cell
     }
 
