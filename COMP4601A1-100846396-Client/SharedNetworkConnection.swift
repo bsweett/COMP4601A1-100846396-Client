@@ -117,10 +117,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
             xmlTags.append("<links>" + l + "</links>")
         }
         
-        let xmlString: String = "<document>" +
+        let xmlString: String = "<Document>" +
                                 xmlTags.toString()  +
                                 xmlLinks.toString() +
-                                "</document>"
+                                "</Document>"
         
         let data : NSData = (xmlString).dataUsingEncoding(NSUTF8StringEncoding)!;
         let length: NSString = NSString(format: "%d", data.length)
@@ -149,6 +149,8 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 
                 if(httpResponse.statusCode == 200) {
                     result = "Document Update"
+                } else if(httpResponse.statusCode == 204){
+                    result = "Document Update Failed: Document Not Found"
                 } else {
                     result = "Document Update Failed: Internal Server Error"
                 }
@@ -171,9 +173,9 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
-        request.HTTPBody = data
-        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        //request.HTTPBody = data
+        //request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        //request.addValue(length, forHTTPHeaderField: "Content-Length")
         //request.addValue("text/html", forHTTPHeaderField: "Accept")
         
         println("sent")
@@ -346,7 +348,7 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPBody = data
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue(length, forHTTPHeaderField: "Content-Length")
-        request.addValue("text/html", forHTTPHeaderField: "Accept")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Accept")
         
         println("sent")
         
@@ -361,9 +363,59 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 dictionary["error"] = err!.localizedDescription
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
             } else {
+                
+                let xml = SWXMLHash.parse(data)
+                var docList: Dictionary<Int, Document> = Dictionary<Int, Document>()
+                
+                for elem in xml["documents"]["document"] {
+                    
+                    let id: Int = elem["id"].element!.text!.toInt()!
+                    let name: String = elem["name"].element!.text!
+                    let text: String = elem["text"].element!.text!
+                    
+                    var document: Document = Document(id: id, score: 0, name: name, text: text)
+                    
+                    for tag in elem["tags"]["tag"] {
+                        
+                        document.addTag(tag.element!.text!)
+                        
+                    }
+
+                    for link in elem["links"]["link"] {
+                        
+                        document.addLink(link.element!.text!)
+                        
+                    }
+                    
+                    docList[document.id] = document
+                    /*let doc: XMLIndexer = elem["document"]
+                    
+                    let id: Int = doc["id"].element!.text!.toInt()!
+                    let score: Int = doc["score"].element!.text!.toInt()!
+                    let name: String = doc["name"].element!.text!
+                    let text: String = doc["text"].element!.text!
+                    
+                    var document: Document = Document(id: id, score: score, name: name, text: text)
+                    
+                    let tags: XMLIndexer = elem["tags"]
+                    for tag in tags {
+                        
+                        document.addTag(tag["tag"].element!.text!)
+                        
+                    }
+                    
+                    let links: XMLIndexer = elem["links"]
+                    for link in links {
+                        
+                        document.addLink(link["link"].element!.text!)
+                        
+                    }*/
+                }
+                
+                /*
                 var dictionary = Dictionary<String, NSData>()
-                dictionary["data"] = data
-                NSNotificationCenter.defaultCenter().postNotificationName("VIEWALL", object: nil, userInfo: dictionary)
+                dictionary["data"] = data*/
+                NSNotificationCenter.defaultCenter().postNotificationName("VIEWALL", object: nil, userInfo: docList)
             }
   
         })
@@ -371,7 +423,6 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         task.resume()
     }
     
-    // NOTE: might want to use xml here and build a tableview
     func searchDocumentsOnServer(tags: String) {
         var request = NSMutableURLRequest(URL: NSURL(string: appSearch + tags)!)
         var session = NSURLSession.sharedSession()
@@ -399,6 +450,7 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 dictionary["error"] = err!.localizedDescription
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
             } else {
+                
                 var dictionary = Dictionary<String, NSData>()
                 dictionary["data"] = data
                 NSNotificationCenter.defaultCenter().postNotificationName("SEARCH", object: nil, userInfo: dictionary)

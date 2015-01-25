@@ -8,15 +8,12 @@
 
 import UIKit
 
-class UpdateViewController: UIViewController {
+class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
 
     @IBOutlet weak var idField: UITextField!
-    @IBOutlet weak var FindButton: UIButton!
     
-    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var tagsField: UITextField!
     @IBOutlet weak var addLinkButton: UIButton!
-    @IBOutlet weak var deleteLinkButton: UIButton!
     @IBOutlet weak var linkView: UITextView!
     
     var id: String! = ""
@@ -45,14 +42,14 @@ class UpdateViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationItem.rightBarButtonItem?.enabled = false
         
+        idField.delegate = self
+        tagsField.delegate = self
+        linkView.delegate = self
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotViewResponseFromServer:", name:"VIEW-XML", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotUpdateResponseFromServer:", name:"UPDATE", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotNetworkError:", name:"NETWORK-ERROR", object: nil)
         
-        addLinkButton.enabled = false
-        deleteLinkButton.enabled = false
-        tagsField.enabled = false
-        FindButton.enabled = false
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -64,10 +61,8 @@ class UpdateViewController: UIViewController {
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
         
-        idField.enabled = true
         idField.text = ""
         tagsField.text = ""
-        titleLabel.text = ""
         linkView.text = ""
         id = ""
         tags = ""
@@ -89,18 +84,40 @@ class UpdateViewController: UIViewController {
         SharedNetworkConnection.sharedInstance.updateDocumentOnServer(id, tags: tags, links: linkView.text)
     }
     
-    @IBAction func findAction(sender: UIButton) {
-        println("find pressed")
-        FindButton.enabled = false
-        SharedNetworkConnection.sharedInstance.getDocumentOnServerXML(id)
-    }
-    
     @IBAction func addLinkAction(sender: UIButton) {
-        // TODO: open alert similar to create view
-    }
-    
-    @IBAction func deleteLinkAction(sender: UIButton) {
-        // TODO: Remove last line of links
+        
+        let alert = UIAlertController(title:  "Enter a URL", message: "URL's are relative to: " + appCurrentServer, preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+            
+        }
+        
+        
+        let okAction = UIAlertAction(title: "Done", style: .Default) { (action) in
+            let pathTextField = alert.textFields![0] as UITextField
+            self.linkView.text = self.linkView.text + "\n" + pathTextField.text
+            if(self.checkCompleteUpdateForm()) {
+                self.navigationItem.rightBarButtonItem?.enabled = true
+            }
+        }
+        okAction.enabled = false
+        
+        alert.addTextFieldWithConfigurationHandler { (textField) in
+            textField.placeholder = "URL"
+            
+            NSNotificationCenter.defaultCenter().addObserverForName(UITextFieldTextDidChangeNotification, object: textField, queue: NSOperationQueue.mainQueue()) { (notification) in
+                
+                if(SharedHelper.validatePathEntry(textField.text) && (textField.text as NSString).length >= 2) {
+                    okAction.enabled = true
+                }
+            }
+        }
+        
+        alert.addAction(okAction)
+        alert.addAction(cancelAction)
+        
+        self.presentViewController(alert, animated: true) {
+            // ...
+        }
     }
     
     // MARK: - UITextFieldDelegate
@@ -125,10 +142,7 @@ class UpdateViewController: UIViewController {
         if(checkCompleteUpdateForm()) {
             self.navigationItem.rightBarButtonItem?.enabled = true
         }
-        
-        if(checkCompleteUpdateForm()) {
-            self.FindButton.enabled = true
-        }
+
         
         return true
     }
@@ -153,25 +167,10 @@ class UpdateViewController: UIViewController {
         
         if(checkCompleteUpdateForm()) {
             self.navigationItem.rightBarButtonItem?.enabled = true
-        } else {
-            self.navigationItem.rightBarButtonItem?.enabled = false
-        }
-        
-        if(checkCompleteUpdateForm()) {
-            self.FindButton.enabled = true
         }
     }
 
     // MARK: - Button Control
-    
-    func checkCompleteGetForm() -> Bool {
-        
-        if(id != "") {
-            return true
-        }
-        
-        return false
-    }
     
     func checkCompleteUpdateForm() -> Bool {
         
@@ -187,28 +186,6 @@ class UpdateViewController: UIViewController {
     }
 
     // MARK: - NSNotifications
-    
-    // TODO: get document object from userinfo
-    func gotViewResponseFromServer(notification: NSNotification) {
-        /*
-        let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
-        let response: NSData = userInfo["data"]!*/
-        
-        // Lock the find unless complete editing or go back to start over
-        NSOperationQueue.mainQueue().addOperationWithBlock {
-            self.idField.enabled = false
-            self.FindButton.enabled = false
-            
-            // TODO: set all the fields before enabling
-            
-            self.addLinkButton.enabled = true
-            if(self.linkView.text != "") {
-                self.deleteLinkButton.enabled = true
-            }
-            self.tagsField.enabled = true
-             self.navigationItem.rightBarButtonItem?.enabled = true
-        }
-    }
     
     func gotUpdateResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
@@ -226,8 +203,6 @@ class UpdateViewController: UIViewController {
         }
     }
     
-    // TODO: Re-enable proper buttons based on error?
-    // Might need to send to different network errors for this one (ie XML has own network error)
     func gotNetworkError(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let error: String = userInfo["error"]!

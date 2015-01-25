@@ -100,7 +100,7 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             
             NSNotificationCenter.defaultCenter().addObserverForName(UITextFieldTextDidChangeNotification, object: textField, queue: NSOperationQueue.mainQueue()) { (notification) in
                 
-                if(SharedHelper.validatePathEntry(textField.text) && (textField.text as NSString).length > 3) {
+                if(SharedHelper.validatePathEntry(textField.text) && (textField.text as NSString).length >= 2) {
                     okAction.enabled = true
                 }
             }

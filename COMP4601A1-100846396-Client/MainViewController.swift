@@ -20,7 +20,8 @@ class MainViewController: UIViewController {
     var SearchVC: SearchViewController!
     var updateVC: UpdateViewController!
     var deleteVC: DeleteViewController!
-    var webVC: WebViewController!
+    
+    var viewAllTableVC: DocTableViewController!
     
     // MARK: - Lifecyle
     
@@ -106,17 +107,16 @@ class MainViewController: UIViewController {
     // MARK: - NSNotifications
     
     func gotResponseFromServer(notification: NSNotification) {
-        let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
-        let response: NSData = userInfo["data"]!
+        let userInfo:Dictionary<Int,Document> = notification.userInfo as Dictionary<Int,Document>
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
             self.viewAllButton.enabled = true
-            if(self.webVC == nil) {
-                self.webVC = WebViewController(nibName: "WebViewController", bundle: nil)
+            if(self.viewAllTableVC == nil) {
+                self.viewAllTableVC = DocTableViewController(nibName: "DocTableViewController", bundle: nil)
             }
             
-            self.webVC.setViewData(response)
-            self.navigationController?.pushViewController(self.webVC, animated: true)
+            self.viewAllTableVC.setDocList(userInfo)
+            self.navigationController?.pushViewController(self.viewAllTableVC, animated: true)
         }
     }
     
