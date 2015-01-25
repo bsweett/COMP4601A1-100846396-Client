@@ -32,7 +32,8 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         let xmlTags: StringBuilder = StringBuilder()
         let xmlLinks: StringBuilder = StringBuilder()
         let tagsArray: [String] = SharedHelper.buildTagsArrayFromString(tags)
-        let linksArray: [String] = SharedHelper.buildLinksArrayFromString(links)
+        var linksArray: [String] = SharedHelper.buildLinksArrayFromString(links)
+        linksArray.removeAtIndex(0)
         
         for s in tagsArray {
             xmlTags.append("<tags>" + s + "</tags>")
@@ -55,16 +56,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         let data : NSData = (xmlString).dataUsingEncoding(NSUTF8StringEncoding)!;
         let length: NSString = NSString(format: "%d", data.length)
         
-        print("Data: ")
-        println(data)
-        
         var err: NSError?
         request.HTTPBody = data
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue(length, forHTTPHeaderField: "Content-Length")
-        //request.addValue("text/html", forHTTPHeaderField: "Accept")
-     
-        println(NSString(data: request.HTTPBody!, encoding: NSUTF8StringEncoding))
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
@@ -107,7 +102,8 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         let xmlTags: StringBuilder = StringBuilder()
         let xmlLinks: StringBuilder = StringBuilder()
         let tagsArray: [String] = SharedHelper.buildTagsArrayFromString(tags)
-        let linksArray: [String] = SharedHelper.buildLinksArrayFromString(links)
+        var linksArray: [String] = SharedHelper.buildLinksArrayFromString(links)
+        linksArray.removeAtIndex(0)
         
         for s in tagsArray {
             xmlTags.append("<tags>" + s + "</tags>")
@@ -129,9 +125,6 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPBody = data
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue(length, forHTTPHeaderField: "Content-Length")
-        //request.addValue("text/html", forHTTPHeaderField: "Accept")
-        
-        println("sent")
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
@@ -173,12 +166,6 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         let length: NSString = NSString(format: "%d", data.length)
         
         var err: NSError?
-        //request.HTTPBody = data
-        //request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        //request.addValue(length, forHTTPHeaderField: "Content-Length")
-        //request.addValue("text/html", forHTTPHeaderField: "Accept")
-        
-        println("sent")
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
@@ -225,8 +212,6 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue(length, forHTTPHeaderField: "Content-Length")
         request.addValue("text/html", forHTTPHeaderField: "Accept")
-        
-        println("sent")
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
@@ -300,9 +285,6 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPBody = data
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue(length, forHTTPHeaderField: "Content-Length")
-        //request.addValue("text/html", forHTTPHeaderField: "Accept")
-        
-        println("sent")
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
@@ -350,8 +332,6 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.addValue(length, forHTTPHeaderField: "Content-Length")
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Accept")
         
-        println("sent")
-        
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
             var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
@@ -363,59 +343,7 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 dictionary["error"] = err!.localizedDescription
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
             } else {
-                
-                let xml = SWXMLHash.parse(data)
-                var docList: Dictionary<Int, Document> = Dictionary<Int, Document>()
-                
-                for elem in xml["documents"]["document"] {
-                    
-                    let id: Int = elem["id"].element!.text!.toInt()!
-                    let name: String = elem["name"].element!.text!
-                    let text: String = elem["text"].element!.text!
-                    
-                    var document: Document = Document(id: id, score: 0, name: name, text: text)
-                    
-                    for tag in elem["tags"]["tag"] {
-                        
-                        document.addTag(tag.element!.text!)
-                        
-                    }
-
-                    for link in elem["links"]["link"] {
-                        
-                        document.addLink(link.element!.text!)
-                        
-                    }
-                    
-                    docList[document.id] = document
-                    /*let doc: XMLIndexer = elem["document"]
-                    
-                    let id: Int = doc["id"].element!.text!.toInt()!
-                    let score: Int = doc["score"].element!.text!.toInt()!
-                    let name: String = doc["name"].element!.text!
-                    let text: String = doc["text"].element!.text!
-                    
-                    var document: Document = Document(id: id, score: score, name: name, text: text)
-                    
-                    let tags: XMLIndexer = elem["tags"]
-                    for tag in tags {
-                        
-                        document.addTag(tag["tag"].element!.text!)
-                        
-                    }
-                    
-                    let links: XMLIndexer = elem["links"]
-                    for link in links {
-                        
-                        document.addLink(link["link"].element!.text!)
-                        
-                    }*/
-                }
-                
-                /*
-                var dictionary = Dictionary<String, NSData>()
-                dictionary["data"] = data*/
-                NSNotificationCenter.defaultCenter().postNotificationName("VIEWALL", object: nil, userInfo: docList)
+                NSNotificationCenter.defaultCenter().postNotificationName("VIEWALL", object: nil, userInfo: self.buildDocumentListFromXML(data))
             }
   
         })
@@ -435,9 +363,7 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         request.HTTPBody = data
         request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
         request.addValue(length, forHTTPHeaderField: "Content-Length")
-        request.addValue("text/html", forHTTPHeaderField: "Accept")
-        
-        println("sent")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Accept")
         
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
@@ -451,13 +377,41 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
             } else {
                 
-                var dictionary = Dictionary<String, NSData>()
-                dictionary["data"] = data
-                NSNotificationCenter.defaultCenter().postNotificationName("SEARCH", object: nil, userInfo: dictionary)
+                NSNotificationCenter.defaultCenter().postNotificationName("SEARCH", object: nil, userInfo: self.buildDocumentListFromXML(data))
             }
             
         })
         
         task.resume()
+    }
+    
+    func buildDocumentListFromXML(data: NSData) -> Dictionary<Int, Document> {
+        let xml = SWXMLHash.parse(data)
+        var docList: Dictionary<Int, Document> = Dictionary<Int, Document>()
+        
+        for elem in xml["documents"]["document"] {
+            
+            let id: Int = elem["id"].element!.text!.toInt()!
+            let name: String = elem["name"].element!.text!
+            let text: String = elem["text"].element!.text!
+            
+            var document: Document = Document(id: id, score: 0, name: name, text: text)
+            
+            for tag in elem["tags"]["tag"] {
+                
+                document.addTag(tag.element!.text!)
+                
+            }
+            
+            for link in elem["links"]["link"] {
+                
+                document.addLink(link.element!.text!)
+                
+            }
+            
+            docList[document.id] = document
+        }
+        
+        return docList
     }
 }

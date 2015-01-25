@@ -15,6 +15,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     var searchText: String! = ""
     
     var webVC: WebViewController!
+    var viewMultiVC: DocTableViewController!
     
     // MARK: - Lifecyle
     
@@ -38,7 +39,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"VIEW", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"SEARCH", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotXMLResponseFromServer:", name:"SEARCH", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotNetworkError:", name:"NETWORK-ERROR", object: nil)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationItem.rightBarButtonItem?.enabled = false
@@ -67,10 +68,12 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Actions
     
     @IBAction func submitAction(sender: UIBarButtonItem) {
-        println("Submit Pressed")
-        if searchText.rangeOfString(":") != nil {
+        
+        if (searchText.rangeOfString(":") != nil || !SharedHelper.validId(searchText)){
+            println("Sent search")
             SharedNetworkConnection.sharedInstance.searchDocumentsOnServer(searchText)
         } else {
+            println("Sent get")
             SharedNetworkConnection.sharedInstance.getDocumentOnServer(searchText)
         }
     }
@@ -134,6 +137,19 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
             
             self.webVC.setViewData(response)
             self.navigationController?.pushViewController(self.webVC, animated: true)
+        }
+    }
+    
+    func gotXMLResponseFromServer(notification: NSNotification) {
+        let userInfo:Dictionary<Int,Document> = notification.userInfo as Dictionary<Int,Document>
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            if(self.viewMultiVC == nil) {
+                self.viewMultiVC = DocTableViewController(nibName: "DocTableViewController", bundle: nil)
+            }
+            
+            self.viewMultiVC.setDocList(userInfo)
+            self.navigationController?.pushViewController(self.viewMultiVC, animated: true)
         }
     }
     
