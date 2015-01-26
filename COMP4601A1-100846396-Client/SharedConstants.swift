@@ -17,7 +17,7 @@ let appServerBenHome: String = "http://192.168.1.101:8080"
 let appServerBraydenHome: String = "http://localhost:8080"
 
 //Server REST Calls
-let restBase: String = "/COMP4601A1-100846396/rest/sda/"
+let restBase: String = "/COMP4601SDA/rest/sda/"
 
 //create - POST
 let appCreate: String = appCurrentServer
