@@ -38,6 +38,7 @@ class SharedHelper {
     
     class func validatePathEntry(testStr: String) -> Bool{
         let regex = NSRegularExpression(pattern: "^(/)?([^/\0]+(/)?)+$", options: .CaseInsensitive, error: nil)
+            
         return regex?.firstMatchInString(testStr, options: nil, range: NSMakeRange(0, countElements(testStr))) != nil
     }
     
