@@ -80,6 +80,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                     result = "Document Created"
                 } else if (httpResponse.statusCode == 204) {
                     result = "Document Creation Failed: No Content"
+                } else if (httpResponse.statusCode == 406) {
+                    result = "Document Creation Failed: Bad Request"
+                } else if (httpResponse.statusCode == 404) {
+                    result = "Document Creation Failed: Link Not Found"
                 } else {
                     result = "Document Creation Failed: Internal Server Error"
                 }
@@ -144,6 +148,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                     result = "Document Update"
                 } else if(httpResponse.statusCode == 204){
                     result = "Document Update Failed: Document Not Found"
+                } else if (httpResponse.statusCode == 406) {
+                    result = "Document Update Failed: Bad Request"
+                } else if (httpResponse.statusCode == 404) {
+                    result = "Document Update Failed: Link Not Found"
                 } else {
                     result = "Document Update Failed: Internal Server Error"
                 }
@@ -185,6 +193,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                     result = "Document Removed"
                 } else if (httpResponse.statusCode == 204) {
                     result = "Document Removal Failed: No Content"
+                } else if (httpResponse.statusCode == 406) {
+                    result = "Document Removal Failed: Bad Request"
+                } else if (httpResponse.statusCode == 404) {
+                    result = "Document Removal Failed: Link Not Found"
                 } else {
                     result = "Document Removal Failed: Internal Server Error"
                 }
@@ -304,6 +316,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                     result = "Document Removed"
                 } else if (httpResponse.statusCode == 204) {
                     result = "Document Removal Failed: No Content"
+                } else if (httpResponse.statusCode == 406) {
+                    result = "Document Removal Failed: Bad Request"
+                } else if (httpResponse.statusCode == 404) {
+                    result = "Document Removal Failed: Link Not Found"
                 } else {
                     result = "Document Removal Failed: Internal Server Error"
                 }
