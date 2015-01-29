@@ -27,8 +27,8 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        docTableView.delegate = self
-        docTableView.dataSource = self
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"VIEW", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotNetworkError:", name:"NETWORK-ERROR", object: nil)
@@ -50,7 +50,7 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        tableView.reloadData()
+        self.tableView.reloadData()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -64,6 +64,16 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    private func findDocumentIdByName(dictionary: Dictionary<Int, Document>, text: String) -> Int {
+        for elem in dictionary {
+            if(elem.1.name == text) {
+                return elem.1.id
+            }
+        }
+        
+        return 0
     }
 
     // MARK: - Table view data source
@@ -86,8 +96,11 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
 
         cell.textLabel?.textColor = UIColor.blackColor()
         
-        if let doc = self.docList[(indexPath.row + 1)] {
-            cell.textLabel?.text = (String(indexPath.row + 1) + " : " + doc.name)
+        var keys : [Int] = Array(self.docList.keys)
+        
+        if let doc = self.docList[keys[indexPath.row]]{
+            let idAsString: String = String(doc.id)
+            cell.textLabel?.text = (idAsString + " : " + doc.name)
         }
 
         return cell
@@ -97,7 +110,10 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.allowsSelection = false;
-        SharedNetworkConnection.sharedInstance.getDocumentOnServer((String(indexPath.row + 1)))
+        
+        let labelForRow = tableView.cellForRowAtIndexPath(indexPath)?.textLabel
+        let idAsDisplay: [String] = (labelForRow?.text?.componentsSeparatedByString(" : "))!
+        SharedNetworkConnection.sharedInstance.getDocumentOnServer(idAsDisplay[0].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()))
     }
     
     func setDocList(dictionary: Dictionary<Int, Document>) {
