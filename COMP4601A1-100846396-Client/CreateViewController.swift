@@ -153,7 +153,7 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
                 name = text
             } else {
                 name = ""
-                JLToast.makeText("Invalid Name (aplha only 3-35 chars)", duration: JLToastDelay.LongDelay).show()
+                JLToast.makeText("Invalid Name (aplha only 3-255 chars)", duration: JLToastDelay.LongDelay).show()
             }
         } else if(textField == tagField) {
             if(SharedHelper.validTags(text)) {

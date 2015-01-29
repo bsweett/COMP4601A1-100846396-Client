@@ -42,7 +42,7 @@ class SharedHelper {
     }
     
     class func validName(testStr: String) -> Bool {
-        let regex = NSRegularExpression(pattern: "^([a-zA-Z]){3,35}$", options: .CaseInsensitive, error: nil)
+        let regex = NSRegularExpression(pattern: "^([a-zA-Z ]){3,255}$", options: .CaseInsensitive, error: nil)
         return regex?.firstMatchInString(testStr, options: nil, range: NSMakeRange(0, countElements(testStr))) != nil
     }
     
