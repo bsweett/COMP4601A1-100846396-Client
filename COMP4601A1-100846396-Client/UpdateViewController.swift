@@ -9,7 +9,7 @@
 import UIKit
 
 class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
-
+    
     @IBOutlet weak var idField: UITextField!
     
     @IBOutlet weak var tagsField: UITextField!
@@ -34,9 +34,11 @@ class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     override func viewDidLoad() {
         super.viewDidLoad()
         SharedHelper.setNavBarForViewController(self, title: "Update Document", withSubmitButton: true)
-        // Do any additional setup after loading the view.
     }
     
+    /**
+    adds this controller as an observer and disables the submit button
+    */
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
@@ -56,11 +58,12 @@ class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         super.viewDidAppear(animated)
     }
     
+    /**
+    Removes this controller as an observer and clears the fields
+    */
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        
         idField.text = ""
         tagsField.text = ""
         linkView.text = ""
@@ -74,16 +77,20 @@ class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     // MARK: - Actions
     
+    /**
+    Submits an update request to the server
+    */
     @IBAction func submitAction(sender: UIBarButtonItem) {
-        println("submit pressed")
         SharedNetworkConnection.sharedInstance.updateDocumentOnServer(id, tags: tags, links: linkView.text)
     }
     
+    /**
+    Shows a link alert and handles all entry of links into the urlfield
+    */
     @IBAction func addLinkAction(sender: UIButton) {
         
         let alert = UIAlertController(title:  "Enter a URL", message: "URL's are relative to: " + appCurrentServer, preferredStyle: UIAlertControllerStyle.Alert)
@@ -142,7 +149,7 @@ class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         if(checkCompleteUpdateForm()) {
             self.navigationItem.rightBarButtonItem?.enabled = true
         }
-
+        
         
         return true
     }
@@ -169,9 +176,12 @@ class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             self.navigationItem.rightBarButtonItem?.enabled = true
         }
     }
-
+    
     // MARK: - Button Control
     
+    /**
+    Checks that the form is complete
+    */
     func checkCompleteUpdateForm() -> Bool {
         
         if(id != "" && tags != "" && linkView.text != "") {
@@ -181,12 +191,18 @@ class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         return false
     }
     
+    /**
+    pops this view from the nav stack
+    */
     func popView() {
         self.navigationController?.popToRootViewControllerAnimated(true)
     }
-
+    
     // MARK: - NSNotifications
     
+    /**
+    Gets the response from the notification and sends it to a alert controller before displaying it
+    */
     func gotUpdateResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let response: String = userInfo["message"]!
@@ -203,6 +219,9 @@ class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         }
     }
     
+    /**
+    Gets the error from the notification and sends it to an alert controller before displaying it
+    */
     func gotNetworkError(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let error: String = userInfo["error"]!
@@ -219,5 +238,5 @@ class UpdateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             }
         }
     }
-            
+    
 }

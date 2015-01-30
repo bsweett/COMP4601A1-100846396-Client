@@ -9,13 +9,15 @@
 import UIKit
 
 class MainViewController: UIViewController {
-
+    
+    // Buttons
     @IBOutlet weak var createButton: UIButton!
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var updateButton: UIButton!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var viewAllButton: UIButton!
     
+    // View Controllers
     var createVC: CreateViewController!
     var SearchVC: SearchViewController!
     var updateVC: UpdateViewController!
@@ -28,16 +30,18 @@ class MainViewController: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
-
+    
     required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
     
+    /**
+    adds controller as observer and hides the nav bar
+    */
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"VIEWALL", object: nil)
@@ -49,6 +53,9 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
     }
     
+    /**
+    removes the controller as an observer
+    */
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -60,11 +67,13 @@ class MainViewController: UIViewController {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     // MARK: - Actions
     
+    /**
+    Creates a createVC if it doesnt exist and pushes it onto the nav stack
+    */
     @IBAction func presentCreateView(sender: UIButton) {
         if(self.createVC == nil) {
             self.createVC = CreateViewController(nibName: "CreateViewController", bundle: nil)
@@ -73,6 +82,9 @@ class MainViewController: UIViewController {
         self.navigationController?.pushViewController(self.createVC, animated: true)
     }
     
+    /**
+    Creates a searchVC if it doesnt exist and pushes it onto the nav stack
+    */
     @IBAction func presentSearchView(sender: UIButton) {
         if(self.SearchVC == nil) {
             self.SearchVC = SearchViewController(nibName: "SearchViewController", bundle: nil)
@@ -81,6 +93,9 @@ class MainViewController: UIViewController {
         self.navigationController?.pushViewController(self.SearchVC, animated: true)
     }
     
+    /**
+    Creates a updateVC if it doesnt exist and pushes it onto the nav stack
+    */
     @IBAction func presentUpdateView(sender: UIButton) {
         if(self.updateVC == nil) {
             self.updateVC = UpdateViewController(nibName: "UpdateViewController", bundle: nil)
@@ -89,6 +104,9 @@ class MainViewController: UIViewController {
         self.navigationController?.pushViewController(self.updateVC, animated: true)
     }
     
+    /**
+    Creates a deleteVC if it doesnt exist and pushes it onto the nav stack
+    */
     @IBAction func presentDeleteView(sender: UIButton) {
         if(self.deleteVC == nil) {
             self.deleteVC = DeleteViewController(nibName: "DeleteViewController", bundle: nil)
@@ -97,6 +115,9 @@ class MainViewController: UIViewController {
         self.navigationController?.pushViewController(self.deleteVC, animated: true)
     }
     
+    /**
+    Disables the view all button and submits a view all documents request
+    */
     @IBAction func presentViewAllView(sender: UIButton) {
         
         viewAllButton.enabled = false
@@ -106,6 +127,10 @@ class MainViewController: UIViewController {
     
     // MARK: - NSNotifications
     
+    /**
+    Gets the documents from the notification and sends them to a docVC before pushing the VC
+    onto the stack
+    */
     func gotResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<Int,Document> = notification.userInfo as Dictionary<Int,Document>
         
@@ -120,6 +145,9 @@ class MainViewController: UIViewController {
         }
     }
     
+    /**
+    Gets the error from the notification and sends it to an alert controller before displaying it
+    */
     func gotNetworkError(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let error: String = userInfo["error"]!
@@ -138,5 +166,5 @@ class MainViewController: UIViewController {
         }
         
     }
-
+    
 }

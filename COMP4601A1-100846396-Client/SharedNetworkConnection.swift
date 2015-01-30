@@ -9,7 +9,7 @@
 import Foundation
 
 class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
-
+    
     //Creating Singleton instance of the class
     class var sharedInstance: SharedNetworkConnection {
         struct Static {
@@ -24,6 +24,11 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         return Static.instance!
     }
     
+    
+    /**
+    Creates an HTTP POST with a Document as XML for the body. Creates a new document. Parses the response code and notifys
+    any listening controllers.
+    */
     func createDocumentOnServer(name: String, text: String, tags: String, links: String) {
         var request = NSMutableURLRequest(URL: NSURL(string: appCreate)!)
         var session = NSURLSession.sharedSession()
@@ -47,11 +52,11 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         println(xmlLinks.toString())
         
         let xmlString: String = "<?xml version=\"1.0\" ?>\n" + "<Document>" +
-                                "<name>" + name + "</name>" +
-                                "<text>" + text + "</text>" +
-                                xmlTags.toString() +
-                                xmlLinks.toString() +
-                                "</Document>"
+            "<name>" + name + "</name>" +
+            "<text>" + text + "</text>" +
+            xmlTags.toString() +
+            xmlLinks.toString() +
+        "</Document>"
         
         let data : NSData = (xmlString).dataUsingEncoding(NSUTF8StringEncoding)!;
         let length: NSString = NSString(format: "%d", data.length)
@@ -98,6 +103,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         task.resume()
     }
     
+    /**
+    Creates an HTTP PUT with a Document as XML for the body. Updates a document. Parses the response code and notifys
+    any listening controllers.
+    */
     func updateDocumentOnServer(id: String, tags: String, links: String) {
         var request = NSMutableURLRequest(URL: NSURL(string: appUpdate + id)!)
         var session = NSURLSession.sharedSession()
@@ -118,9 +127,9 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         }
         
         let xmlString: String = "<Document>" +
-                                xmlTags.toString()  +
-                                xmlLinks.toString() +
-                                "</Document>"
+            xmlTags.toString()  +
+            xmlLinks.toString() +
+        "</Document>"
         
         let data : NSData = (xmlString).dataUsingEncoding(NSUTF8StringEncoding)!;
         let length: NSString = NSString(format: "%d", data.length)
@@ -165,6 +174,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         task.resume()
     }
     
+    /**
+    Creates an HTTP DELETE with a Document Id. Deletes the document. Parses the response code and notifys
+    any listening controllers.
+    */
     func deleteDocumentOnServer(id: String) {
         var request = NSMutableURLRequest(URL: NSURL(string: appDelete + id)!)
         var session = NSURLSession.sharedSession()
@@ -205,12 +218,16 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 dictionary["message"] = result
                 NSNotificationCenter.defaultCenter().postNotificationName("DELETE", object: nil, userInfo: dictionary)
             }
-
+            
         })
         
         task.resume()
     }
     
+    /**
+    Creates an HTTP GET with a Document as XML for the body. Sends the HTML to
+    any listening controllers.
+    */
     func getDocumentOnServer(id: String) {
         var request = NSMutableURLRequest(URL: NSURL(string: appView + id)!)
         var session = NSURLSession.sharedSession()
@@ -240,12 +257,16 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 dictionary["data"] = data
                 NSNotificationCenter.defaultCenter().postNotificationName("VIEW", object: nil, userInfo: dictionary)
             }
-
+            
         })
         
         task.resume()
     }
     
+    /**
+    Creates an HTTP GET with a Document Id. Sends the parsed XML doc to
+    any listening controllers.
+    */
     func getDocumentOnServerXML(id: String) {
         var request = NSMutableURLRequest(URL: NSURL(string: appView + id)!)
         var session = NSURLSession.sharedSession()
@@ -285,6 +306,10 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         task.resume()
     }
     
+    /**
+    Creates an HTTP GET with a tag string. Parses the response code to
+    any listening controllers.
+    */
     func deleteMultipleDocumentsOnServer(tags: String) {
         var request = NSMutableURLRequest(URL: NSURL(string: appDeleteMulti + tags)!)
         var session = NSURLSession.sharedSession()
@@ -328,12 +353,15 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 dictionary["message"] = result
                 NSNotificationCenter.defaultCenter().postNotificationName("DELETE-MULTI", object: nil, userInfo: dictionary)
             }
-
+            
         })
         
         task.resume()
     }
     
+    /**
+    Creates an HTTP GET for view all documents. Sends the parsed XML to any controllers listening
+    */
     func viewAllDocumentsOnServer() {
         var request = NSMutableURLRequest(URL: NSURL(string: appViewAll)!)
         var session = NSURLSession.sharedSession()
@@ -361,12 +389,15 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
             } else {
                 NSNotificationCenter.defaultCenter().postNotificationName("VIEWALL", object: nil, userInfo: self.buildDocumentListFromXML(data))
             }
-  
+            
         })
         
         task.resume()
     }
     
+    /**
+    Creates a HTTP Get with document tags. Parses the result XML and notifies any listening view controllers
+    */
     func searchDocumentsOnServer(tags: String) {
         var request = NSMutableURLRequest(URL: NSURL(string: appSearch + tags)!)
         var session = NSURLSession.sharedSession()
@@ -401,6 +432,9 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         task.resume()
     }
     
+    /**
+    returns a list of documents parsed from XML data
+    */
     func buildDocumentListFromXML(data: NSData) -> Dictionary<Int, Document> {
         let xml = SWXMLHash.parse(data)
         var docList: Dictionary<Int, Document> = Dictionary<Int, Document>()

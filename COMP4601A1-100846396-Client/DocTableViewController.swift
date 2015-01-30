@@ -36,11 +36,6 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
         SharedHelper.setNavBarForViewController(self, title: "Document Library", withSubmitButton: false)
         
         docTableView.reloadData()
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -60,12 +55,15 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    /**
+    Finds a document id by a given name
+    */
     private func findDocumentIdByName(dictionary: Dictionary<Int, Document>, text: String) -> Int {
         for elem in dictionary {
             if(elem.1.name == text) {
@@ -75,17 +73,17 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
         
         return 0
     }
-
+    
     // MARK: - Table view data source
-
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
-
+    
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.docList.count
     }
-
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "docCell")
         
@@ -93,7 +91,7 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
         let selectedBackgroundView = UIView(frame: CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height))
         selectedBackgroundView.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.2)
         cell.selectedBackgroundView = selectedBackgroundView
-
+        
         cell.textLabel?.textColor = UIColor.blackColor()
         
         var keys : [Int] = Array(self.docList.keys)
@@ -102,10 +100,10 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
             let idAsString: String = String(doc.id)
             cell.textLabel?.text = (idAsString + " : " + doc.name)
         }
-
+        
         return cell
     }
-
+    
     // MARK: - Table view delegate
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -116,12 +114,20 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
         SharedNetworkConnection.sharedInstance.getDocumentOnServer(idAsDisplay[0].stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet()))
     }
     
+    /**
+    Sets the dictionary of documents that this table view holds. Should be called before pushing this
+    view onto the stack
+    */
     func setDocList(dictionary: Dictionary<Int, Document>) {
         self.docList = dictionary
     }
     
     // MARK: - NSNotifications
     
+    /**
+    Gets the HTML data from the notification and sends it to a web controller before pushing it onto the
+    nav stack
+    */
     func gotResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
         let response: NSData = userInfo["data"]!
@@ -138,6 +144,9 @@ class DocTableViewController: UITableViewController, UITableViewDataSource, UITa
         }
     }
     
+    /**
+    Gets the error from the notification and sends it to an alert controller before displaying it
+    */
     func gotNetworkError(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let error: String = userInfo["error"]!

@@ -9,7 +9,7 @@
 import UIKit
 
 class Document: NSObject {
-   
+    
     var id: Int!
     var score: Int!
     var name: String!
@@ -17,6 +17,9 @@ class Document: NSObject {
     var tags: [String]!
     var links: [String]!
     
+    /**
+    Constructor for document object
+    */
     init(id: Int, score: Int, name: String, text: String, tags: [String], links: [String]) {
         self.id = id
         self.score = score
@@ -26,6 +29,9 @@ class Document: NSObject {
         self.links = links
     }
     
+    /**
+    Constructor for document object with empty arrays
+    */
     init(id: Int, score: Int, name: String, text: String) {
         self.id = id
         self.score = score
@@ -35,10 +41,16 @@ class Document: NSObject {
         self.links = []
     }
     
+    /**
+    Adds a tag to a tag array
+    */
     func addTag(tag: String) {
         tags.append(tag)
     }
     
+    /**
+    Removes a tag from a tag array
+    */
     func removeTag(tag: String) {
         var count: Int = 0
         
@@ -50,10 +62,16 @@ class Document: NSObject {
         }
     }
     
+    /**
+    Adds a link to a link array
+    */
     func addLink(link: String) {
         links.append(link)
     }
     
+    /**
+    Removes a link from a link array
+    */
     func removeLink(link: String) {
         var count: Int = 0
         

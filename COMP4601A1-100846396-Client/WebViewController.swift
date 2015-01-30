@@ -9,7 +9,7 @@
 import UIKit
 
 class WebViewController: UIViewController {
-
+    
     var viewData: NSData!
     
     @IBOutlet weak var webView: UIWebView!
@@ -27,7 +27,6 @@ class WebViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         SharedHelper.setNavBarForViewController(self, title: "Web View", withSubmitButton: false)
-        // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -35,6 +34,9 @@ class WebViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
+    /**
+    If HTML is found display it
+    */
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -53,9 +55,11 @@ class WebViewController: UIViewController {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
+    /**
+    Sets the data for display. Should be called before pushing view onto stack
+    */
     func setViewData(data: NSData) {
         self.viewData = data
     }

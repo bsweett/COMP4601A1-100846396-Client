@@ -33,9 +33,11 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         searchField.delegate = self
         
         SharedHelper.setNavBarForViewController(self, title: "Search Documents", withSubmitButton: true)
-        // Do any additional setup after loading the view.
     }
     
+    /**
+        Adds the controller as an observer and disables the submit button
+    */
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"VIEW", object: nil)
@@ -49,6 +51,9 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         super.viewDidAppear(animated)
     }
     
+    /**
+        Removes the controller as an observer and clears the fields
+    */
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -67,17 +72,19 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Actions
     
+    /**
+        Submits either a search by tag or id based on the form input
+    */
     @IBAction func submitAction(sender: UIBarButtonItem) {
         
         if (searchText.rangeOfString(":") != nil || !SharedHelper.validId(searchText)){
-            println("Sent search")
             SharedNetworkConnection.sharedInstance.searchDocumentsOnServer(searchText)
         } else {
-            println("Sent get")
             SharedNetworkConnection.sharedInstance.getDocumentOnServer(searchText)
         }
     }
     
+    // MARK: - UITextFieldDelegate
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         let text: String = textField.text + string
@@ -116,6 +123,9 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Form State
     
+    /**
+        Checks if the form is complete
+    */
     func checkCompleteForm() -> Bool{
         if(searchText != "") {
             return true
@@ -126,6 +136,10 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - NSNotifications
     
+    /**
+        Gets the HTML data from the notification and sends it to a web controller before pushing it onto the
+        nav stack
+    */
     func gotResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
         let response: NSData = userInfo["data"]!
@@ -140,6 +154,10 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    /**
+        Gets the documents from the notification and sends them to a docVC before pushing the VC
+        onto the stack
+    */
     func gotXMLResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<Int,Document> = notification.userInfo as Dictionary<Int,Document>
         
@@ -153,6 +171,9 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    /**
+        Gets the error from the notification and sends it to an alert controller before displaying it
+    */
     func gotNetworkError(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let error: String = userInfo["error"]!

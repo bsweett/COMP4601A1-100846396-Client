@@ -9,7 +9,7 @@
 import UIKit
 
 class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate {
-
+    
     @IBOutlet weak var nameField: UITextField!
     @IBOutlet weak var documentField: UITextView!
     @IBOutlet weak var tagField: UITextField!
@@ -33,17 +33,18 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         nameField.delegate = self
         tagField.delegate = self
         documentField.delegate = self
         urlField.delegate = self
         
         SharedHelper.setNavBarForViewController(self, title: "Create Document", withSubmitButton: true)
-        
-        // Do any additional setup after loading the view.
     }
     
+    /**
+    Adds the controller as an observer and disables the submit button
+    */
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"CREATE", object: nil)
@@ -56,6 +57,9 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         super.viewDidAppear(animated)
     }
     
+    /**
+    Removes the controller as an observer and clears all the fields
+    */
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -73,11 +77,13 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     // MARK: - Actions
     
+    /**
+    Shows a link alert and handles all entry of links into the urlfield
+    */
     @IBAction func showLinkAlert(sender: UIButton) {
         
         let alert = UIAlertController(title:  "Enter a URL", message: "URL's are relative to: " + appCurrentServer, preferredStyle: UIAlertControllerStyle.Alert)
@@ -115,8 +121,10 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         
     }
     
+    /**
+    Submits a create document request to the server
+    */
     @IBAction func submitAction(sender: UIBarButtonItem) {
-        println("Submit Pressed")
         SharedNetworkConnection.sharedInstance.createDocumentOnServer(name, text: documentField.text, tags: tags, links: urlField.text)
     }
     
@@ -179,6 +187,9 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
     
     // MARK: - Button Control
     
+    /**
+    Checks if the form is ready to submit
+    */
     func checkCompleteForm() -> Bool {
         
         if(name != "" && tags != "" && urlField.text != "" && documentField.text != "") {
@@ -188,12 +199,18 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         return false
     }
     
+    /**
+    pops this view from the nav stack
+    */
     func popView() {
         self.navigationController?.popToRootViewControllerAnimated(true)
     }
     
     // MARK: - NSNotifications
     
+    /**
+    Gets the response from the notification and sends it to a alert controller before displaying it
+    */
     func gotResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let response: String = userInfo["message"]!
@@ -205,11 +222,14 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
             }
             alert.addAction(cancelAction)
             self.presentViewController(alert, animated: true, completion: { () -> Void in
-               self.popView()
+                self.popView()
             })
         }
     }
     
+    /**
+    Gets the error from the notification and sends it to an alert controller before displaying it
+    */
     func gotNetworkError(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let error: String = userInfo["error"]!
@@ -222,11 +242,11 @@ class CreateViewController: UIViewController, UITextFieldDelegate, UITextViewDel
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
             self.presentViewController(alert, animated: true) {
-
+                
             }
         }
         
     }
     
-
+    
 }

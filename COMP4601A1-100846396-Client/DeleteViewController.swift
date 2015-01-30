@@ -13,7 +13,7 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var searchField: UITextField!
     
     var searchText: String! = ""
-
+    
     var webVC: WebViewController!
     
     // MARK: - Lifecyle
@@ -32,9 +32,11 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
         searchField.delegate = self
         
         SharedHelper.setNavBarForViewController(self, title: "Delete Document", withSubmitButton: true)
-        // Do any additional setup after loading the view.
     }
     
+    /**
+        Adds this controller as an observer and disables the submit button
+    */
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"DELETE", object: nil)
@@ -48,6 +50,9 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
         super.viewDidAppear(animated)
     }
     
+    /**
+        Clears the fields and removes this controller as an obeserver
+    */
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -61,13 +66,15 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     // MARK: - Actions
     
+    /**
+    Submits a delete by tags or by id based on the form input
+    */
     @IBAction func submitAction(sender: UIBarButtonItem) {
-         if (searchText.rangeOfString(":") != nil || !SharedHelper.validId(searchText)){
+        if (searchText.rangeOfString(":") != nil || !SharedHelper.validId(searchText)){
             SharedNetworkConnection.sharedInstance.deleteMultipleDocumentsOnServer(searchText)
         } else {
             SharedNetworkConnection.sharedInstance.deleteDocumentOnServer(searchText)
@@ -113,6 +120,9 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Form State
     
+    /**
+    Checks that the form is complete
+    */
     func checkCompleteForm() -> Bool{
         if(searchText != "") {
             return true
@@ -121,12 +131,18 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
         return false
     }
     
+    /**
+    pops this view from the nav stack
+    */
     func popView() {
         self.navigationController?.popToRootViewControllerAnimated(true)
     }
     
     // MARK: - NSNotifications
     
+    /**
+    Gets the response from the notification and sends it to a alert controller before displaying it
+    */
     func gotResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let response: String = userInfo["message"]!
@@ -143,6 +159,9 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
         }
     }
     
+    /**
+    Gets the error from the notification and sends it to an alert controller before displaying it
+    */
     func gotNetworkError(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
         let error: String = userInfo["error"]!
@@ -159,5 +178,5 @@ class DeleteViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
-
+    
 }
