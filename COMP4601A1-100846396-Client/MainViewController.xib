@@ -11,6 +11,7 @@
                 <outlet property="deleteButton" destination="gPa-Yn-kGa" id="ocZ-GC-sSN"/>
                 <outlet property="listButton" destination="ogF-AQ-mu1" id="NSu-dB-qpr"/>
                 <outlet property="noboostButton" destination="uAp-ef-qnt" id="gXt-zP-DqN"/>
+                <outlet property="pageRankButton" destination="CcZ-J5-qga" id="kvd-xR-Xrn"/>
                 <outlet property="resetButton" destination="sVq-N3-3hF" id="BGN-k4-Xho"/>
                 <outlet property="sdaSerachButton" destination="NwX-bj-cm5" id="OQc-yw-nNg"/>
                 <outlet property="searchButton" destination="Efg-1o-K9K" id="vmk-OE-lcC"/>
@@ -27,7 +28,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uRR-6d-6Nr">
                     <rect key="frame" x="8" y="45" width="584" height="510"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="COMP4601 - A1 Client" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vWh-Pm-RYf">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="COMP4601 - A2 Client" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vWh-Pm-RYf">
                             <rect key="frame" x="204" y="20" width="176" height="21"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -166,6 +167,21 @@
                                 <action selector="presentSdaSearchView:" destination="-1" eventType="touchUpInside" id="Ied-1k-CYT"/>
                             </connections>
                         </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CcZ-J5-qga">
+                            <rect key="frame" x="142" y="370" width="150" height="50"/>
+                            <color key="backgroundColor" red="0.0" green="0.59999999999999998" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="5Qs-HW-30D"/>
+                                <constraint firstAttribute="width" constant="150" id="ARp-6u-KIo"/>
+                            </constraints>
+                            <state key="normal" title="Page Rank">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="displayPageRankFromServer:" destination="-1" eventType="touchUpInside" id="mQE-At-o9E"/>
+                            </connections>
+                        </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wam-1e-yj3">
                             <rect key="frame" x="142" y="80" width="150" height="50"/>
                             <color key="backgroundColor" red="0.20000000000000001" green="0.59999999999999998" blue="0.80000000000000004" alpha="1" colorSpace="calibratedRGB"/>
@@ -193,11 +209,13 @@
                         <constraint firstItem="NwX-bj-cm5" firstAttribute="baseline" secondItem="uAp-ef-qnt" secondAttribute="baseline" id="NE0-G5-CZi"/>
                         <constraint firstItem="uAp-ef-qnt" firstAttribute="centerX" secondItem="ogF-AQ-mu1" secondAttribute="centerX" id="PUv-zb-dDh"/>
                         <constraint firstItem="Efg-1o-K9K" firstAttribute="leading" secondItem="wam-1e-yj3" secondAttribute="trailing" constant="8" symbolic="YES" id="Q2b-r9-sJ9"/>
+                        <constraint firstItem="CcZ-J5-qga" firstAttribute="top" secondItem="uAp-ef-qnt" secondAttribute="bottom" constant="8" symbolic="YES" id="S55-91-Aiq"/>
                         <constraint firstItem="wam-1e-yj3" firstAttribute="centerX" secondItem="vWh-Pm-RYf" secondAttribute="centerX" id="Sty-Mg-aA9"/>
                         <constraint firstItem="vWh-Pm-RYf" firstAttribute="top" secondItem="uRR-6d-6Nr" secondAttribute="top" constant="20" id="Xv2-Ut-b2f"/>
                         <constraint firstItem="PSh-cP-w7h" firstAttribute="centerX" secondItem="gPa-Yn-kGa" secondAttribute="centerX" constant="-158" id="XyO-bS-H8h"/>
                         <constraint firstItem="wam-1e-yj3" firstAttribute="baseline" secondItem="Efg-1o-K9K" secondAttribute="baseline" id="YRF-u2-v2s"/>
                         <constraint firstItem="wam-1e-yj3" firstAttribute="leading" secondItem="Efg-1o-K9K" secondAttribute="leading" constant="-256" id="YvO-Vb-W1D"/>
+                        <constraint firstItem="CcZ-J5-qga" firstAttribute="centerX" secondItem="uAp-ef-qnt" secondAttribute="centerX" id="ZUL-53-rYs"/>
                         <constraint firstItem="PSh-cP-w7h" firstAttribute="top" secondItem="gPa-Yn-kGa" secondAttribute="bottom" constant="8" id="b5F-l1-wBU"/>
                         <constraint firstAttribute="centerX" secondItem="wam-1e-yj3" secondAttribute="centerX" constant="75" id="fr7-AA-PQ5"/>
                         <constraint firstItem="uAp-ef-qnt" firstAttribute="top" secondItem="ogF-AQ-mu1" secondAttribute="bottom" constant="8" symbolic="YES" id="hj6-od-RTt"/>

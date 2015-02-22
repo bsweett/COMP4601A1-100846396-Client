@@ -23,6 +23,7 @@ class MainViewController: UIViewController {
     @IBOutlet weak var boostButton: UIButton!
     @IBOutlet weak var noboostButton: UIButton!
     @IBOutlet weak var sdaSerachButton: UIButton!
+    @IBOutlet weak var pageRankButton: UIButton!
     
     // A1 View Controllers
     var createVC: CreateViewController!
@@ -59,7 +60,8 @@ class MainViewController: UIViewController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotHTTPResponseFromServer:", name:"RESET", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotHTTPResponseFromServer:", name:"BOOST", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotHTTPResponseFromServer:", name:"NOBOOST", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotListResponseFromServer:", name:"LIST", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotHTMLResponseFromServer:", name:"LIST", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotHTMLResponseFromServer:", name:"PAGERANK", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotNetworkError:", name:"NETWORK-ERROR", object: nil)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
@@ -174,6 +176,12 @@ class MainViewController: UIViewController {
         self.navigationController?.pushViewController(self.sdaSearchVC, animated: true)
     }
     
+    @IBAction func displayPageRankFromServer(sender: UIButton) {
+        
+        pageRankButton.enabled = false
+        SharedNetworkConnection.sharedInstance.sdaPageRankRequest()
+    }
+    
     // MARK: - NSNotifications
     
     /**
@@ -214,12 +222,13 @@ class MainViewController: UIViewController {
         }
     }
     
-    func gotListResponseFromServer(notification: NSNotification) {
+    func gotHTMLResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
         let response: NSData = userInfo["data"]!
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
             self.listButton.enabled = true
+            self.pageRankButton.enabled = true
             if(self.webVC == nil) {
                 self.webVC = WebViewController(nibName: "WebViewController", bundle: nil)
             }
