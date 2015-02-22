@@ -65,6 +65,14 @@ class SharedHelper {
     }
     
     /**
+    Validates a string of terms
+    */
+    class func validTerms(testStr: String) -> Bool {
+        let regex = NSRegularExpression(pattern: "^([a-zA-Z0-9:+]){1,255}$", options: .CaseInsensitive, error: nil)
+        return regex?.firstMatchInString(testStr, options: nil, range: NSMakeRange(0, countElements(testStr))) != nil
+    }
+    
+    /**
     Validates an Id
     */
     class func validId(testStr: String) -> Bool {

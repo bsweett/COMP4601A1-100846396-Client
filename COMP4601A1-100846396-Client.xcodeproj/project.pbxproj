@@ -17,6 +17,8 @@
 		5F910DDC1A6E094A00DB0450 /* JLToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F910DD91A6E094A00DB0450 /* JLToast.swift */; };
 		5F910DDD1A6E094A00DB0450 /* JLToastCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F910DDA1A6E094A00DB0450 /* JLToastCenter.swift */; };
 		5F910DDE1A6E094A00DB0450 /* JLToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F910DDB1A6E094A00DB0450 /* JLToastView.swift */; };
+		5FEE44371A9A5DB10053C430 /* SdaSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FEE44351A9A5DB10053C430 /* SdaSearchViewController.swift */; };
+		5FEE44381A9A5DB10053C430 /* SdaSearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FEE44361A9A5DB10053C430 /* SdaSearchViewController.xib */; };
 		5FF0FFA21A6DA87C00676819 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FF0FFA11A6DA87C00676819 /* AppDelegate.swift */; };
 		5FF0FFA91A6DA87C00676819 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FF0FFA81A6DA87C00676819 /* Images.xcassets */; };
 		5FF0FFAC1A6DA87C00676819 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5FF0FFAA1A6DA87C00676819 /* LaunchScreen.xib */; };
@@ -57,6 +59,8 @@
 		5F910DD91A6E094A00DB0450 /* JLToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToast.swift; sourceTree = "<group>"; };
 		5F910DDA1A6E094A00DB0450 /* JLToastCenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToastCenter.swift; sourceTree = "<group>"; };
 		5F910DDB1A6E094A00DB0450 /* JLToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JLToastView.swift; sourceTree = "<group>"; };
+		5FEE44351A9A5DB10053C430 /* SdaSearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SdaSearchViewController.swift; sourceTree = "<group>"; };
+		5FEE44361A9A5DB10053C430 /* SdaSearchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SdaSearchViewController.xib; sourceTree = "<group>"; };
 		5FF0FF9C1A6DA87B00676819 /* COMP4601A1-100846396-Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "COMP4601A1-100846396-Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FF0FFA01A6DA87C00676819 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5FF0FFA11A6DA87C00676819 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -193,6 +197,8 @@
 				5F05F79E1A7038DA005847C0 /* WebViewController.xib */,
 				5F8FCCCB1A745A640046F289 /* DocTableViewController.swift */,
 				5F8FCCCC1A745A640046F289 /* DocTableViewController.xib */,
+				5FEE44351A9A5DB10053C430 /* SdaSearchViewController.swift */,
+				5FEE44361A9A5DB10053C430 /* SdaSearchViewController.xib */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -292,6 +298,7 @@
 				5FF0FFC41A6DA8C600676819 /* MainViewController.xib in Resources */,
 				5F8FCCCE1A745A640046F289 /* DocTableViewController.xib in Resources */,
 				5F05F7A01A7038DA005847C0 /* WebViewController.xib in Resources */,
+				5FEE44381A9A5DB10053C430 /* SdaSearchViewController.xib in Resources */,
 				5FF0FFD81A6DB39400676819 /* DeleteViewController.xib in Resources */,
 				5FF0FFD01A6DB16400676819 /* SearchViewController.xib in Resources */,
 				5FF0FFA91A6DA87C00676819 /* Images.xcassets in Resources */,
@@ -330,6 +337,7 @@
 				5F910DDC1A6E094A00DB0450 /* JLToast.swift in Sources */,
 				5F05F79F1A7038DA005847C0 /* WebViewController.swift in Sources */,
 				5FF0FFD31A6DB18E00676819 /* UpdateViewController.swift in Sources */,
+				5FEE44371A9A5DB10053C430 /* SdaSearchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,6 +19,9 @@ let appServerBraydenHome: String = "http://localhost:8080"
 //Server REST Calls
 let restBase: String = "/COMP4601SDA/rest/sda/"
 
+
+
+//MARK: - Assignment 1
 //create - POST
 let appCreate: String = appCurrentServer
 
@@ -27,7 +30,7 @@ let appUpdate: String = appCurrentServer
 
 //view - GET {id}/{tags}
 let appView: String = appCurrentServer
-let appSearch: String = appCurrentServer + "search/"
+let appQuery: String = appCurrentServer + "query/"
 
 //delete - DELETE {id} and deleteMulti - GET {tags}
 let appDelete: String = appCurrentServer
@@ -35,3 +38,22 @@ let appDeleteMulti: String = appCurrentServer + "delete/"
 
 //viewAll - GET {id}
 let appViewAll: String = appCurrentServer + "documents/"
+
+
+
+//MARK: - Assignment 2
+//reset - GET
+let sdaReset: String = appCurrentServer + "reset/"
+
+//list - GET
+let sdaList: String = appCurrentServer + "list/"
+
+//pagerank - GET
+let sdaPageRank: String = appCurrentServer + "pagerank/"
+
+//boost/noboost - GET
+let sdaBoost: String = appCurrentServer + "boost/"
+let sdaNoBoost: String = appCurrentServer + "noboost/"
+
+//search - GET {terms}
+let sdaSearch: String = appCurrentServer + "search/"

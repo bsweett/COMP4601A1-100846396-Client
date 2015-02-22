@@ -1,15 +1,15 @@
 //
-//  SearchViewController.swift
+//  SdaSearchViewController.swift
 //  COMP4601A1-100846396-Client
 //
-//  Created by Ben Sweett on 2015-01-19.
+//  Created by Ben Sweett on 2015-02-22.
 //  Copyright (c) 2015 Ben Sweett. All rights reserved.
 //
 
 import UIKit
 
-class SearchViewController: UIViewController, UITextFieldDelegate {
-    
+class SdaSearchViewController: UIViewController, UITextFieldDelegate {
+
     @IBOutlet weak var searchField: UITextField!
     
     var searchText: String! = ""
@@ -32,16 +32,16 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         
         searchField.delegate = self
         
-        SharedHelper.setNavBarForViewController(self, title: "Query Local Documents", withSubmitButton: true)
+        SharedHelper.setNavBarForViewController(self, title: "Search SDA Documents", withSubmitButton: true)
     }
     
     /**
-        Adds the controller as an observer and disables the submit button
+    Adds the controller as an observer and disables the submit button
     */
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"VIEW", object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotXMLResponseFromServer:", name:"QUERY", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"SEARCH-HTML", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotXMLResponseFromServer:", name:"SEARCH-XML", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotNetworkError:", name:"NETWORK-ERROR", object: nil)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationItem.rightBarButtonItem?.enabled = false
@@ -52,7 +52,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     }
     
     /**
-        Removes the controller as an observer and clears the fields
+    Removes the controller as an observer and clears the fields
     */
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -69,19 +69,17 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+
     
     // MARK: - Actions
     
     /**
-        Submits either a search by tag or id based on the form input
+    Submits either a search by tag or id based on the form input
     */
     @IBAction func submitAction(sender: UIBarButtonItem) {
         
-        if (searchText.rangeOfString("+") != nil){
-            SharedNetworkConnection.sharedInstance.queryLocalDocumentsOnServer(searchText)
-        } else {
-            SharedNetworkConnection.sharedInstance.getDocumentOnServer(searchText)
-        }
+        SharedNetworkConnection.sharedInstance.sdaDistrubedSearchXML(searchText)
+
     }
     
     // MARK: - UITextFieldDelegate
@@ -90,7 +88,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         let text: String = textField.text + string
         
         if(textField == searchField) {
-            if(SharedHelper.validId(text) || SharedHelper.validTerms(text)) {
+            if(SharedHelper.validTerms(text)) {
                 searchText = text
             } else {
                 searchText = ""
@@ -107,11 +105,11 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     func textFieldDidEndEditing(textField: UITextField) {
         let text: String = textField.text
         if(textField == searchField) {
-            if(SharedHelper.validId(text) || SharedHelper.validTerms(text)) {
+            if(SharedHelper.validTerms(text)) {
                 searchText = text
             } else {
                 searchText = ""
-                JLToast.makeText("Invalid ID or Tag", duration: JLToastDelay.LongDelay).show()
+                JLToast.makeText("Invalid Terms", duration: JLToastDelay.LongDelay).show()
             }
         }
         
@@ -120,11 +118,10 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         }
     }
 
-    
     // MARK: - Form State
     
     /**
-        Checks if the form is complete
+    Checks if the form is complete
     */
     func checkCompleteForm() -> Bool{
         if(searchText != "") {
@@ -137,8 +134,8 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     // MARK: - NSNotifications
     
     /**
-        Gets the HTML data from the notification and sends it to a web controller before pushing it onto the
-        nav stack
+    Gets the HTML data from the notification and sends it to a web controller before pushing it onto the
+    nav stack
     */
     func gotResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
@@ -155,8 +152,8 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     }
     
     /**
-        Gets the documents from the notification and sends them to a docVC before pushing the VC
-        onto the stack
+    Gets the documents from the notification and sends them to a docVC before pushing the VC
+    onto the stack
     */
     func gotXMLResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<Int,Document> = notification.userInfo as Dictionary<Int,Document>
@@ -172,7 +169,7 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     }
     
     /**
-        Gets the error from the notification and sends it to an alert controller before displaying it
+    Gets the error from the notification and sends it to an alert controller before displaying it
     */
     func gotNetworkError(notification: NSNotification) {
         let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
@@ -190,5 +187,6 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
-        
+
+
 }

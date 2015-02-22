@@ -24,6 +24,7 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         return Static.instance!
     }
     
+    // MARK: - Assignment 1
     
     /**
     Creates an HTTP POST with a Document as XML for the body. Creates a new document. Parses the response code and notifys
@@ -294,8 +295,6 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 dictionary["error"] = err!.localizedDescription
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
             } else {
-                
-                // TODO: Parse XML to document object
                 var dictionary = Dictionary<String, NSData>()
                 dictionary["data"] = data
                 NSNotificationCenter.defaultCenter().postNotificationName("VIEW-XML", object: nil, userInfo: dictionary)
@@ -398,8 +397,8 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
     /**
     Creates a HTTP Get with document tags. Parses the result XML and notifies any listening view controllers
     */
-    func searchDocumentsOnServer(tags: String) {
-        var request = NSMutableURLRequest(URL: NSURL(string: appSearch + tags)!)
+    func queryLocalDocumentsOnServer(tags: String) {
+        var request = NSMutableURLRequest(URL: NSURL(string: appQuery + tags)!)
         var session = NSURLSession.sharedSession()
         request.HTTPMethod = "GET"
         
@@ -424,7 +423,7 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
             } else {
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("SEARCH", object: nil, userInfo: self.buildDocumentListFromXML(data))
+                NSNotificationCenter.defaultCenter().postNotificationName("QUERY", object: nil, userInfo: self.buildDocumentListFromXML(data))
             }
             
         })
@@ -463,5 +462,311 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         }
         
         return docList
+    }
+    
+    //MARK: - Assignment 2
+    
+    /**
+    Sends empty XML as GET, returns Response Code
+    */
+    func sdaResetRequest() {
+        var request = NSMutableURLRequest(URL: NSURL(string: sdaReset)!)
+        var session = NSURLSession.sharedSession()
+        request.HTTPMethod = "GET"
+        
+        let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
+        
+        var err: NSError?
+        request.HTTPBody = data
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        
+        var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            println("Response: \(response)")
+            var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            println("Body: \(strData)")
+            var err: NSError? = error
+            
+            if(err != nil) {
+                var dictionary = Dictionary<String, String>()
+                dictionary["error"] = err!.localizedDescription
+                NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
+            } else if let httpResponse: NSHTTPURLResponse! = response as? NSHTTPURLResponse {
+                
+                var result: String! = ""
+                
+                if(httpResponse.statusCode == 200) {
+                    result = "SDA Reset"
+                } else if(httpResponse.statusCode == 204){
+                    result = "SDA Reset Failed: No Content"
+                } else if (httpResponse.statusCode == 406) {
+                    result = "SDA Reset Failed: Bad Request"
+                } else if (httpResponse.statusCode == 404) {
+                    result = "SDA Reset Failed: Link Not Found"
+                } else {
+                    result = "SDA Reset Failed: Internal Server Error"
+                }
+                
+                var dictionary = Dictionary<String, String>()
+                dictionary["message"] = result
+                NSNotificationCenter.defaultCenter().postNotificationName("RESET", object: nil, userInfo: dictionary)
+            }
+        })
+        
+        task.resume()
+    }
+    
+    /**
+    Sends empty XML as GET, returns HTML list of sda's
+    */
+    func sdaListRequest() {
+        var request = NSMutableURLRequest(URL: NSURL(string: sdaList)!)
+        var session = NSURLSession.sharedSession()
+        request.HTTPMethod = "GET"
+        
+        let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
+        
+        var err: NSError?
+        request.HTTPBody = data
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        request.addValue("text/html", forHTTPHeaderField: "Accept")
+        
+        var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            println("Response: \(response)")
+            var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            println("Body: \(strData)")
+            var err: NSError? = error
+            
+            if(err != nil) {
+                var dictionary = Dictionary<String, String>()
+                dictionary["error"] = err!.localizedDescription
+                NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
+            } else {
+                var dictionary = Dictionary<String, NSData>()
+                dictionary["data"] = data
+                NSNotificationCenter.defaultCenter().postNotificationName("LIST", object: nil, userInfo: dictionary)
+            }
+            
+        })
+        
+        task.resume()
+    }
+    
+    /**
+    Sends empty XML as GET, returns HTML list of page ranks
+    */
+    func sdaPageRankRequest() {
+        var request = NSMutableURLRequest(URL: NSURL(string: sdaPageRank)!)
+        var session = NSURLSession.sharedSession()
+        request.HTTPMethod = "GET"
+        
+        let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
+        
+        var err: NSError?
+        request.HTTPBody = data
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        request.addValue("text/html", forHTTPHeaderField: "Accept")
+        
+        var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            println("Response: \(response)")
+            var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            println("Body: \(strData)")
+            var err: NSError? = error
+            
+            if(err != nil) {
+                var dictionary = Dictionary<String, String>()
+                dictionary["error"] = err!.localizedDescription
+                NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
+            } else {
+                var dictionary = Dictionary<String, NSData>()
+                dictionary["data"] = data
+                NSNotificationCenter.defaultCenter().postNotificationName("PAGERANK", object: nil, userInfo: dictionary)
+            }
+            
+        })
+        
+        task.resume()
+    }
+    
+    /**
+    Sends empty XML as GET, returns Response Code
+    */
+    func sdaBoostRequest() {
+        var request = NSMutableURLRequest(URL: NSURL(string: sdaBoost)!)
+        var session = NSURLSession.sharedSession()
+        request.HTTPMethod = "GET"
+        
+        let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
+        
+        var err: NSError?
+        request.HTTPBody = data
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        
+        var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            println("Response: \(response)")
+            var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            println("Body: \(strData)")
+            var err: NSError? = error
+            
+            if(err != nil) {
+                var dictionary = Dictionary<String, String>()
+                dictionary["error"] = err!.localizedDescription
+                NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
+            } else if let httpResponse: NSHTTPURLResponse! = response as? NSHTTPURLResponse {
+                
+                var result: String! = ""
+                
+                if(httpResponse.statusCode == 200) {
+                    result = "SDA Boosted"
+                } else if(httpResponse.statusCode == 204){
+                    result = "SDA Boost Failed: No Content"
+                } else if (httpResponse.statusCode == 406) {
+                    result = "SDA Boost Failed: Bad Request"
+                } else if (httpResponse.statusCode == 404) {
+                    result = "SDA Boost Failed: Link Not Found"
+                } else {
+                    result = "SDA Boost Failed: Internal Server Error"
+                }
+                
+                var dictionary = Dictionary<String, String>()
+                dictionary["message"] = result
+                NSNotificationCenter.defaultCenter().postNotificationName("BOOST", object: nil, userInfo: dictionary)
+            }
+        })
+        
+        task.resume()
+    }
+    
+    /**
+    Sends empty XML as GET, returns Response Code
+    */
+    func sdaNoBoostRequest() {
+        var request = NSMutableURLRequest(URL: NSURL(string: sdaNoBoost)!)
+        var session = NSURLSession.sharedSession()
+        request.HTTPMethod = "GET"
+        
+        let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
+        
+        var err: NSError?
+        request.HTTPBody = data
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        
+        var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            println("Response: \(response)")
+            var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            println("Body: \(strData)")
+            var err: NSError? = error
+            
+            if(err != nil) {
+                var dictionary = Dictionary<String, String>()
+                dictionary["error"] = err!.localizedDescription
+                NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
+            } else if let httpResponse: NSHTTPURLResponse! = response as? NSHTTPURLResponse {
+                
+                var result: String! = ""
+                
+                if(httpResponse.statusCode == 200) {
+                    result = "SDA Boost Reset"
+                } else if(httpResponse.statusCode == 204){
+                    result = "SDA Boost Reset Failed: No Content"
+                } else if (httpResponse.statusCode == 406) {
+                    result = "SDA Boost Reset Failed: Bad Request"
+                } else if (httpResponse.statusCode == 404) {
+                    result = "SDA Boost Reset Failed: Link Not Found"
+                } else {
+                    result = "SDA Boost Reset Failed: Internal Server Error"
+                }
+                
+                var dictionary = Dictionary<String, String>()
+                dictionary["message"] = result
+                NSNotificationCenter.defaultCenter().postNotificationName("NOBOOST", object: nil, userInfo: dictionary)
+            }
+        })
+        
+        task.resume()
+    }
+    
+    /**
+    Sends empty XML as GET with terms, returns HTML list of results
+    */
+    func sdaDistrubedSearchHTML(terms: String) {
+        var request = NSMutableURLRequest(URL: NSURL(string: sdaSearch + terms)!)
+        var session = NSURLSession.sharedSession()
+        request.HTTPMethod = "GET"
+        
+        let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
+        
+        var err: NSError?
+        request.HTTPBody = data
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        request.addValue("text/html", forHTTPHeaderField: "Accept")
+        
+        var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            println("Response: \(response)")
+            var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            println("Body: \(strData)")
+            var err: NSError? = error
+            
+            if(err != nil) {
+                var dictionary = Dictionary<String, String>()
+                dictionary["error"] = err!.localizedDescription
+                NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
+            } else {
+                var dictionary = Dictionary<String, NSData>()
+                dictionary["data"] = data
+                NSNotificationCenter.defaultCenter().postNotificationName("SEARCH-HTML", object: nil, userInfo: dictionary)
+            }
+            
+        })
+        
+        task.resume()
+    }
+    
+    /**
+    Creates a HTTP Get with document tags. Parses the result XML and notifies any listening view controllers
+    */
+    func sdaDistrubedSearchXML(terms: String) {
+        var request = NSMutableURLRequest(URL: NSURL(string: appQuery + terms)!)
+        var session = NSURLSession.sharedSession()
+        request.HTTPMethod = "GET"
+        
+        let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
+        
+        var err: NSError?
+        request.HTTPBody = data
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Accept")
+        
+        var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            println("Response: \(response)")
+            var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            println("Body: \(strData)")
+            var err: NSError? = error
+            
+            if(err != nil) {
+                var dictionary = Dictionary<String, String>()
+                dictionary["error"] = err!.localizedDescription
+                NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
+            } else {
+                
+                NSNotificationCenter.defaultCenter().postNotificationName("SEARCH-XML", object: nil, userInfo: self.buildDocumentListFromXML(data))
+            }
+            
+        })
+        
+        task.resume()
     }
 }

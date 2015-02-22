@@ -10,20 +10,31 @@ import UIKit
 
 class MainViewController: UIViewController {
     
-    // Buttons
+    // A1 Buttons
     @IBOutlet weak var createButton: UIButton!
     @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var updateButton: UIButton!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var viewAllButton: UIButton!
     
-    // View Controllers
+    // A2 Buttons
+    @IBOutlet weak var resetButton: UIButton!
+    @IBOutlet weak var listButton: UIButton!
+    @IBOutlet weak var boostButton: UIButton!
+    @IBOutlet weak var noboostButton: UIButton!
+    @IBOutlet weak var sdaSerachButton: UIButton!
+    
+    // A1 View Controllers
     var createVC: CreateViewController!
     var SearchVC: SearchViewController!
     var updateVC: UpdateViewController!
     var deleteVC: DeleteViewController!
     
     var viewAllTableVC: DocTableViewController!
+    
+    // A2 View Controllers
+    var webVC: WebViewController!
+    var sdaSearchVC: SdaSearchViewController!
     
     // MARK: - Lifecyle
     
@@ -44,7 +55,11 @@ class MainViewController: UIViewController {
     */
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"VIEWALL", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotViewAllResponseFromServer:", name:"VIEWALL", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotHTTPResponseFromServer:", name:"RESET", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotHTTPResponseFromServer:", name:"BOOST", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotHTTPResponseFromServer:", name:"NOBOOST", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotListResponseFromServer:", name:"LIST", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotNetworkError:", name:"NETWORK-ERROR", object: nil)
         self.navigationController?.setNavigationBarHidden(true, animated: true)
     }
@@ -69,7 +84,7 @@ class MainViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
-    // MARK: - Actions
+    // MARK: - A1 Actions
     
     /**
     Creates a createVC if it doesnt exist and pushes it onto the nav stack
@@ -125,13 +140,47 @@ class MainViewController: UIViewController {
         
     }
     
+    // MARK: - A2 Actions
+    
+    @IBAction func resetSdaOnServer(sender: UIButton) {
+        
+        resetButton.enabled = false
+        SharedNetworkConnection.sharedInstance.sdaResetRequest()
+    }
+    
+    @IBAction func listSdasOnServer(sender: UIButton) {
+        
+        listButton.enabled = false
+        SharedNetworkConnection.sharedInstance.sdaListRequest()
+    }
+    
+    @IBAction func boostSdaDocumentsOnServer(sender: UIButton) {
+        
+        boostButton.enabled = false
+        SharedNetworkConnection.sharedInstance.sdaBoostRequest()
+    }
+    
+    @IBAction func removeBoostFromSdaDocumentsOnServer(sender: UIButton) {
+        
+        noboostButton.enabled = false
+        SharedNetworkConnection.sharedInstance.sdaNoBoostRequest()
+    }
+    
+    @IBAction func presentSdaSearchView(sender: UIButton) {
+        if(self.sdaSearchVC == nil) {
+            self.sdaSearchVC = SdaSearchViewController(nibName: "SdaSearchViewController", bundle: nil)
+        }
+        
+        self.navigationController?.pushViewController(self.sdaSearchVC, animated: true)
+    }
+    
     // MARK: - NSNotifications
     
     /**
     Gets the documents from the notification and sends them to a docVC before pushing the VC
     onto the stack
     */
-    func gotResponseFromServer(notification: NSNotification) {
+    func gotViewAllResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<Int,Document> = notification.userInfo as Dictionary<Int,Document>
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
@@ -142,6 +191,41 @@ class MainViewController: UIViewController {
             
             self.viewAllTableVC.setDocList(userInfo)
             self.navigationController?.pushViewController(self.viewAllTableVC, animated: true)
+        }
+    }
+    
+    
+    func gotHTTPResponseFromServer(notification: NSNotification) {
+        let userInfo:Dictionary<String,String> = notification.userInfo as Dictionary<String,String>
+        let response: String = userInfo["message"]!
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.resetButton.enabled = true
+            self.boostButton.enabled = true
+            self.noboostButton.enabled = true
+            let alert = UIAlertController(title:  "SDA Response", message: response, preferredStyle: UIAlertControllerStyle.Alert)
+            let cancelAction = UIAlertAction(title: "Ok", style: .Cancel) { (action) in
+                
+            }
+            alert.addAction(cancelAction)
+            self.presentViewController(alert, animated: true) {
+                
+            }
+        }
+    }
+    
+    func gotListResponseFromServer(notification: NSNotification) {
+        let userInfo:Dictionary<String,NSData> = notification.userInfo as Dictionary<String,NSData>
+        let response: NSData = userInfo["data"]!
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.listButton.enabled = true
+            if(self.webVC == nil) {
+                self.webVC = WebViewController(nibName: "WebViewController", bundle: nil)
+            }
+            
+            self.webVC.setViewData(response)
+            self.navigationController?.pushViewController(self.webVC, animated: true)
         }
     }
     
@@ -160,6 +244,10 @@ class MainViewController: UIViewController {
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
             self.viewAllButton.enabled = true
+            self.resetButton.enabled = true
+            self.boostButton.enabled = true
+            self.noboostButton.enabled = true
+            self.listButton.enabled = true
             self.presentViewController(alert, animated: true) {
                 
             }
