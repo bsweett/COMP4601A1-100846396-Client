@@ -431,34 +431,88 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         task.resume()
     }
     
+    
+    /**
+    Creates a HTTP Get with document tags. Parses the result XML and notifies any listening view controllers
+    */
+    func queryLocalDocumentsOnServerHTML(tags: String) {
+        var request = NSMutableURLRequest(URL: NSURL(string: appQuery + tags)!)
+        var session = NSURLSession.sharedSession()
+        request.HTTPMethod = "GET"
+        
+        let data : NSData = ("").dataUsingEncoding(NSUTF8StringEncoding)!;
+        let length: NSString = NSString(format: "%d", data.length)
+        
+        var err: NSError?
+        request.HTTPBody = data
+        request.addValue("application/xml; charset=utf-8", forHTTPHeaderField: "Content-Type")
+        request.addValue(length, forHTTPHeaderField: "Content-Length")
+        request.addValue("text/html", forHTTPHeaderField: "Accept")
+        
+        var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+            println("Response: \(response)")
+            var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            println("Body: \(strData)")
+            var err: NSError? = error
+            
+            if(err != nil) {
+                var dictionary = Dictionary<String, String>()
+                dictionary["error"] = err!.localizedDescription
+                NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
+            } else {
+                var dictionary = Dictionary<String, NSData>()
+                dictionary["data"] = data
+                NSNotificationCenter.defaultCenter().postNotificationName("QUERY-HTML", object: nil, userInfo: dictionary)
+            }
+            
+        })
+        
+        task.resume()
+    }
+    
+    
     /**
     returns a list of documents parsed from XML data
     */
     func buildDocumentListFromXML(data: NSData) -> Dictionary<Int, Document> {
-        let xml = SWXMLHash.parse(data)
         var docList: Dictionary<Int, Document> = Dictionary<Int, Document>()
         
-        for elem in xml["documents"]["document"] {
+        println("in here")
+        var error: NSError?
+        if let xml = AEXMLDocument(xmlData: data, error: &error) {
             
-            let id: Int = elem["id"].element!.text!.toInt()!
-            let name: String = elem["name"].element!.text!
-            let text: String = elem["text"].element!.text!
-            
-            var document: Document = Document(id: id, score: 0, name: name, text: text)
-            
-            for tag in elem["tags"]["tag"] {
-                
-                document.addTag(tag.element!.text!)
-                
+            println("parse")
+            println(xml.xmlString)
+            if let documents = xml.root["document"].all {
+                for doc in documents {
+                    
+                    let id: Int = doc["id"].intValue
+                    let score: String = doc["score"].stringValue
+                    let name: String = doc["name"].stringValue
+                    let text: String = doc["text"].stringValue
+                    
+                    let scoreF: Float = (score as NSString).floatValue
+                    
+                    var document: Document = Document(id: id, score: scoreF, name: name, text: text)
+                    
+                    for item in doc.children {
+                        
+                        if(item.name == "tag") {
+                            document.addTag(item.value!)
+                        }
+                        
+                        if(item.name == "link") {
+                            document.addLink(item.value!)
+                        }
+                        
+                    }
+                    
+                    docList[document.id] = document
+                }
             }
             
-            for link in elem["links"]["link"] {
-                
-                document.addLink(link.element!.text!)
-                
-            }
-            
-            docList[document.id] = document
+        } else {
+            println("description: \(error?.localizedDescription)\ninfo: \(error?.userInfo)")
         }
         
         return docList
@@ -715,7 +769,7 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
         var task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
             println("Response: \(response)")
             var strData = NSString(data: data, encoding: NSUTF8StringEncoding)
-            println("Body: \(strData)")
+            //println("Body: \(strData)")
             var err: NSError? = error
             
             if(err != nil) {
@@ -762,7 +816,16 @@ class SharedNetworkConnection: NSObject, NSURLSessionDataDelegate {
                 NSNotificationCenter.defaultCenter().postNotificationName("NETWORK-ERROR", object: nil, userInfo: dictionary)
             } else {
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("SEARCH-XML", object: nil, userInfo: self.buildDocumentListFromXML(data))
+                var nsData: NSData = data
+                var dictionary: Dictionary<Int, Document> = Dictionary<Int, Document>()
+                let bg_task = Async.background {
+                    var dictionary = self.buildDocumentListFromXML(nsData)
+                }
+                
+                bg_task.wait()
+                
+                NSNotificationCenter.defaultCenter().postNotificationName("SEARCH-XML", object: nil, userInfo: dictionary)
+                
             }
             
         })

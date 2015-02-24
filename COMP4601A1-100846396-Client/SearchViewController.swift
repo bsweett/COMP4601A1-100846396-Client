@@ -42,6 +42,9 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         super.viewWillAppear(animated)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"VIEW", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotXMLResponseFromServer:", name:"QUERY", object: nil)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotResponseFromServer:", name:"QUERY-HTML", object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "gotNetworkError:", name:"NETWORK-ERROR", object: nil)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationItem.rightBarButtonItem?.enabled = false

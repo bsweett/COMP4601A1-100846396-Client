@@ -234,7 +234,10 @@ class MainViewController: UIViewController {
             }
             
             self.webVC.setViewData(response)
-            self.navigationController?.pushViewController(self.webVC, animated: true)
+            if (self.navigationController?.topViewController.isKindOfClass(WebViewController) == nil)
+            {
+                self.navigationController?.pushViewController(self.webVC, animated: true)
+            }
         }
     }
     

@@ -78,7 +78,8 @@ class SdaSearchViewController: UIViewController, UITextFieldDelegate {
     */
     @IBAction func submitAction(sender: UIBarButtonItem) {
         
-        SharedNetworkConnection.sharedInstance.sdaDistrubedSearchXML(searchText)
+        //SharedNetworkConnection.sharedInstance.sdaDistrubedSearchXML(searchText)
+        SharedNetworkConnection.sharedInstance.sdaDistrubedSearchHTML(searchText)
 
     }
     
@@ -157,6 +158,7 @@ class SdaSearchViewController: UIViewController, UITextFieldDelegate {
     */
     func gotXMLResponseFromServer(notification: NSNotification) {
         let userInfo:Dictionary<Int,Document> = notification.userInfo as Dictionary<Int,Document>
+        println("Count: ", userInfo.count)
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
             if(self.viewMultiVC == nil) {

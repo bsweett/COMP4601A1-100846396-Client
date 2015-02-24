@@ -11,7 +11,7 @@ import UIKit
 class Document: NSObject {
     
     var id: Int!
-    var score: Int!
+    var score: Float!
     var name: String!
     var text: String!
     var tags: [String]!
@@ -20,7 +20,7 @@ class Document: NSObject {
     /**
     Constructor for document object
     */
-    init(id: Int, score: Int, name: String, text: String, tags: [String], links: [String]) {
+    init(id: Int, score: Float, name: String, text: String, tags: [String], links: [String]) {
         self.id = id
         self.score = score
         self.name = name
@@ -32,7 +32,7 @@ class Document: NSObject {
     /**
     Constructor for document object with empty arrays
     */
-    init(id: Int, score: Int, name: String, text: String) {
+    init(id: Int, score: Float, name: String, text: String) {
         self.id = id
         self.score = score
         self.name = name
